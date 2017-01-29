@@ -44,10 +44,12 @@ func HandleConnection(conn net.Conn) {
 	for {
 		packet, err := player.ReadPacket()
 		if err != nil {
-			conn.Close()
 			break
 		}
 
 		CallEvent("packetReceived", packet)
 	}
+
+	conn.Close()
+	log.Printf("%s disconnected.", conn.RemoteAddr().String())
 }

@@ -2,7 +2,7 @@ package main
 
 import (
 	"reflect"
-	"errors"
+	"log"
 )
 
 var (
@@ -29,7 +29,8 @@ func (player *Player) HandlePacket(id int, length int) (packet Packet, err error
 	typ := packets[PacketTypeHash(player.state, id)];
 
 	if typ == nil {
-		return nil, errors.New("Unknown packet")
+		log.Printf("Unknown packet #%d\n", id)
+		return nil, nil
 	}
 
 	packet, _ = reflect.New(typ).Interface().(Packet)

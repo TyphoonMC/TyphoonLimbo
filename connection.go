@@ -3,7 +3,6 @@ package main
 import (
 	"net"
 	"log"
-	"bufio"
 )
 
 type State int8
@@ -35,19 +34,16 @@ type Player struct {
 func (player *Player) ReadPacket() (packet Packet, err error){
 	length, err := player.ReadVarInt()
 	if err != nil {
-		log.Print(err)
 		return
 	}
 
 	id, err := player.ReadVarInt()
 	if err != nil {
-		log.Print(err)
 		return
 	}
 
 	packet, err = player.HandlePacket(id, length)
 	if err != nil {
-		log.Print(err)
 		return
 	} else if packet != nil {
 		log.Println("Packet: ", packet)
@@ -61,19 +57,18 @@ func (player *Player) WritePacket(packet Packet) (err error){
 	tmp := player.io
 	player.io = &ConnReadWrite{
 		rdr: tmp.rdr,
-		wtr: bufio.NewWriter(buff),
+		wtr: buff,
 	}
-
-	buff.Write([]byte("test1"))
-	player.io.wtr.Write([]byte("test2"))
 
 	id := packet.Id()
 	player.WriteVarInt(id)
 	packet.Write(player)
 
-	player.io = tmp
+	ln := newVarBuffer(0)
+	player.io.wtr = ln
 	player.WriteVarInt(buff.Len())
-	log.Println(buff.Len())
-	player.io.wtr.Write(buff.Bytes())
+	player.io = tmp
+	player.conn.Write(ln.Bytes())
+	player.conn.Write(buff.Bytes())
 	return nil
 }
