@@ -117,3 +117,103 @@ func (packet *PacketStatusPing) Handle(player *Player) {
 func (packet *PacketStatusPing) Id() int {
 	return 0x01
 }
+
+type PacketLoginStart struct {
+	username string
+}
+func (packet *PacketLoginStart) Read(player *Player) (err error) {
+	packet.username, err = player.ReadString()
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketLoginStart) Write(player *Player) (err error) {
+	return
+}
+func (packet *PacketLoginStart) Handle(player *Player) {
+	player.name = packet.username
+
+	success := PacketLoginSuccess{
+		uuid: player.uuid,
+		username: player.name,
+	}
+	player.WritePacket(&success)
+	player.state = PLAY
+
+	player.kick("Not implemented yet..")
+	return
+}
+func (packet *PacketLoginStart) Id() int {
+	return 0x00
+}
+
+type PacketLoginSuccess struct {
+	uuid string
+	username string
+}
+func (packet *PacketLoginSuccess) Read(player *Player) (err error) {
+	return
+}
+func (packet *PacketLoginSuccess) Write(player *Player) (err error) {
+	err = player.WriteString(packet.uuid)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteString(packet.username)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketLoginSuccess) Handle(player *Player) {
+	return
+}
+func (packet *PacketLoginSuccess) Id() int {
+	return 0x02
+}
+
+type PacketPlayDisconnect struct {
+	component string
+}
+func (packet *PacketPlayDisconnect) Read(player *Player) (err error) {
+	return
+}
+func (packet *PacketPlayDisconnect) Write(player *Player) (err error) {
+	err = player.WriteString(packet.component)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketPlayDisconnect) Handle(player *Player) {
+	return
+}
+func (packet *PacketPlayDisconnect) Id() int {
+	return 0x1A
+}
+
+type PacketPlayKeepAlive struct {
+	id int
+}
+func (packet *PacketPlayKeepAlive) Read(player *Player) (err error) {
+	return
+}
+func (packet *PacketPlayKeepAlive) Write(player *Player) (err error) {
+	err = player.WriteVarInt(packet.id)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketPlayKeepAlive) Handle(player *Player) {
+	return
+}
+func (packet *PacketPlayKeepAlive) Id() int {
+	return 0x1E
+}

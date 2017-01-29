@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"encoding/binary"
+	"fmt"
 )
 
 type ConnReadWrite struct {
@@ -54,6 +55,16 @@ func (player *Player) ReadUInt16() (i uint16, err error){
 	return binary.BigEndian.Uint16(buff), nil
 }
 
+func (player *Player) WriteUInt16(i uint16) (err error){
+	buff := player.io.buffer[:2]
+	binary.BigEndian.PutUint16(buff, i)
+	_, err = player.io.wtr.Write(buff)
+	if err != nil {
+		return err
+	}
+	return
+}
+
 func (player *Player) ReadUInt64() (i uint64, err error){
 	buff := player.io.buffer[:8]
 	_, err = io.ReadFull(player.io.rdr, buff)
@@ -97,4 +108,13 @@ func (player *Player) WriteString(s string) (err error){
 		return err
 	}
 	return nil
+}
+
+func (player *Player) kick(s string) {
+	msg := fmt.Sprintf(`{"text": "%s"}`, s)
+	disconnect := PacketPlayDisconnect{
+		component: msg,
+	}
+	player.WritePacket(&disconnect)
+	player.conn.Close()
 }

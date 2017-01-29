@@ -6,6 +6,10 @@ import (
 	"bufio"
 )
 
+var (
+	connCounter = 0
+)
+
 func main() {
 	InitPackets()
 
@@ -19,12 +23,13 @@ func main() {
 		if err != nil {
 			log.Print(err)
 		} else {
-			go HandleConnection(conn)
+			connCounter+=1
+			go HandleConnection(conn, connCounter)
 		}
 	}
 }
 
-func HandleConnection(conn net.Conn) {
+func HandleConnection(conn net.Conn, uid int) {
 	log.Printf("%s connected.", conn.RemoteAddr().String())
 
 	player := &Player {
@@ -39,6 +44,8 @@ func HandleConnection(conn net.Conn) {
 			"",
 			0,
 		},
+		name: "",
+		uuid: "d979912c-bb24-4f23-a6ac-c32985a1e5d3",
 	}
 
 	for {

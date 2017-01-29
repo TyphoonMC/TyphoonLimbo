@@ -29,6 +29,8 @@ type Player struct {
 	state State
 	protocol Protocol
 	inaddr InAddr
+	name string
+	uuid string
 }
 
 func (player *Player) ReadPacket() (packet Packet, err error){
@@ -46,7 +48,7 @@ func (player *Player) ReadPacket() (packet Packet, err error){
 	if err != nil {
 		return
 	} else if packet != nil {
-		log.Println("Packet: ", packet)
+		log.Println("->", id, packet)
 		packet.Handle(player)
 	}
 	return
@@ -70,5 +72,7 @@ func (player *Player) WritePacket(packet Packet) (err error){
 	player.io = tmp
 	player.conn.Write(ln.Bytes())
 	player.conn.Write(buff.Bytes())
+
+	log.Println("<-", id, packet)
 	return nil
 }
