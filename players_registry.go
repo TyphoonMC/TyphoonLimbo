@@ -4,10 +4,10 @@ var (
 	players map[int]*Player = make(map[int]*Player)
 )
 
-func (player *Player) register(id int) {
-	players[id]=player
+func (player *Player) register() {
+	players[player.id]=player
 }
 
-func (player *Player) unregister(id int) {
-	delete(players, id)
+func (player *Player) unregister() {
+	delete(players, player.id)
 }

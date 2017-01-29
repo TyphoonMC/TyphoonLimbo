@@ -45,9 +45,6 @@ func KeepAlive() {
 				}
 
 				id := int(r.Uint32())
-				if id == 0 {
-					id = 1
-				}
 				keepalive.id = id
 				player.keepalive = id
 				player.WritePacket(keepalive)
@@ -61,6 +58,7 @@ func HandleConnection(conn net.Conn, id int) {
 	log.Printf("%s connected.", conn.RemoteAddr().String())
 
 	player := &Player {
+		id: id,
 		conn: conn,
 		state: HANDSHAKING,
 		protocol: V1_10,
@@ -76,7 +74,6 @@ func HandleConnection(conn net.Conn, id int) {
 		uuid: "d979912c-bb24-4f23-a6ac-c32985a1e5d3",
 		keepalive: 0,
 	}
-	player.register(id)
 
 	for {
 		packet, err := player.ReadPacket()
@@ -87,7 +84,7 @@ func HandleConnection(conn net.Conn, id int) {
 		CallEvent("packetReceived", packet)
 	}
 
-	player.unregister(id)
+	player.unregister()
 	conn.Close()
 	log.Printf("%s disconnected.", conn.RemoteAddr().String())
 }

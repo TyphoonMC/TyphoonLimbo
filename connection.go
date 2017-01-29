@@ -24,6 +24,7 @@ type InAddr struct {
 }
 
 type Player struct {
+	id int
 	conn net.Conn
 	io *ConnReadWrite
 	state State

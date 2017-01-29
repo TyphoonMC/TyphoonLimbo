@@ -61,7 +61,7 @@ func (packet *PacketStatusRequest) Handle(player *Player) {
 	protocol := player.protocol
 
 	response := PacketStatusResponse{
-		response: fmt.Sprintf(`{"version":{"name":"Typhoon 1.10","protocol":%d},"players":{"max":10000,"online":0,"sample":[]},"description":{"text":"TyphoonLimbo v0.1"},"favicon":""}`, protocol),
+		response: fmt.Sprintf(`{"version":{"name":"Typhoon 1.10","protocol":%d},"players":{"max":10000,"online":%d,"sample":[]},"description":{"text":"TyphoonLimbo v0.1"},"favicon":""}`, protocol, len(players)),
 	}
 	player.WritePacket(&response)
 	return
@@ -141,6 +141,7 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 	}
 	player.WritePacket(&success)
 	player.state = PLAY
+	player.register()
 
 	//player.Kick("Not implemented yet..")
 	return
