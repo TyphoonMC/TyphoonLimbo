@@ -56,9 +56,9 @@ func (packet *PacketStatusRequest) Write(player *Player) (err error) {
 }
 func (packet *PacketStatusRequest) Handle(player *Player) {
 	response := PacketStatusResponse{
-		response: `{"version":{"name":"1.10","protocol":210},"players":{"max":10000,"online":0,"sample":[]},"description":{"text":"TyphoonLimbo v0.1"},"favicon":"data:image/png;base64,<data>"}`,
+		response: `{"version":{"name":"Typhoon 1.10","protocol":210},"players":{"max":10000,"online":0,"sample":[]},"description":{"text":"TyphoonLimbo v0.1"},"favicon":"data:image/png;base64,<data>"}`,
 	}
-	player.WritePacket(response)
+	player.WritePacket(&response)
 	return
 }
 func (packet *PacketStatusRequest) Id() int {

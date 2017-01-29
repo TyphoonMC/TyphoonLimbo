@@ -3,7 +3,7 @@ package main
 import (
 	"net"
 	"log"
-	"bytes"
+	"bufio"
 )
 
 type State int8
@@ -26,7 +26,7 @@ type InAddr struct {
 
 type Player struct {
 	conn net.Conn
-	io ConnReadWrite
+	io *ConnReadWrite
 	state State
 	protocol Protocol
 	inaddr InAddr
@@ -38,14 +38,12 @@ func (player *Player) ReadPacket() (packet Packet, err error){
 		log.Print(err)
 		return
 	}
-	log.Println("Packet size: ", length)
 
 	id, err := player.ReadVarInt()
 	if err != nil {
 		log.Print(err)
 		return
 	}
-	log.Println("Packet id: ", id)
 
 	packet, err = player.HandlePacket(id, length)
 	if err != nil {
@@ -59,5 +57,23 @@ func (player *Player) ReadPacket() (packet Packet, err error){
 }
 
 func (player *Player) WritePacket(packet Packet) (err error){
-	//TODO
+	buff := newVarBuffer(256)
+	tmp := player.io
+	player.io = &ConnReadWrite{
+		rdr: tmp.rdr,
+		wtr: bufio.NewWriter(buff),
+	}
+
+	buff.Write([]byte("test1"))
+	player.io.wtr.Write([]byte("test2"))
+
+	id := packet.Id()
+	player.WriteVarInt(id)
+	packet.Write(player)
+
+	player.io = tmp
+	player.WriteVarInt(buff.Len())
+	log.Println(buff.Len())
+	player.io.wtr.Write(buff.Bytes())
+	return nil
 }

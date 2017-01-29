@@ -31,7 +31,7 @@ func HandleConnection(conn net.Conn) {
 		conn: conn,
 		state: HANDSHAKING,
 		protocol: V1_10,
-		io: ConnReadWrite{
+		io: &ConnReadWrite{
 			rdr: bufio.NewReader(conn),
 			wtr: bufio.NewWriter(conn),
 		},
