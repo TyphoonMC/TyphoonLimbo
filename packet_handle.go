@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"log"
+	"fmt"
+)
 
 type PacketHandshake struct {
 	protocol Protocol
@@ -55,8 +58,10 @@ func (packet *PacketStatusRequest) Write(player *Player) (err error) {
 	return
 }
 func (packet *PacketStatusRequest) Handle(player *Player) {
+	protocol := player.protocol
+
 	response := PacketStatusResponse{
-		response: `{"version":{"name":"Typhoon 1.10","protocol":210},"players":{"max":10000,"online":0,"sample":[]},"description":{"text":"TyphoonLimbo v0.1"},"favicon":""}`,
+		response: fmt.Sprintf(`{"version":{"name":"Typhoon 1.10","protocol":%d},"players":{"max":10000,"online":0,"sample":[]},"description":{"text":"TyphoonLimbo v0.1"},"favicon":""}`, protocol),
 	}
 	player.WritePacket(&response)
 	return
@@ -84,4 +89,31 @@ func (packet *PacketStatusResponse) Handle(player *Player) {
 }
 func (packet *PacketStatusResponse) Id() int {
 	return 0x00
+}
+
+type PacketStatusPing struct {
+	time uint64
+}
+func (packet *PacketStatusPing) Read(player *Player) (err error) {
+	packet.time, err = player.ReadUInt64()
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketStatusPing) Write(player *Player) (err error) {
+	err = player.WriteUInt64(packet.time)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketStatusPing) Handle(player *Player) {
+	player.WritePacket(packet)
+	return
+}
+func (packet *PacketStatusPing) Id() int {
+	return 0x01
 }

@@ -23,6 +23,7 @@ func PacketTypeHash(state State, id int) int64 {
 func InitPackets() {
 	packets[PacketTypeHash(HANDSHAKING, 0x00)] = reflect.TypeOf((*PacketHandshake)(nil)).Elem()
 	packets[PacketTypeHash(STATUS, 0x00)] = reflect.TypeOf((*PacketStatusRequest)(nil)).Elem()
+	packets[PacketTypeHash(STATUS, 0x01)] = reflect.TypeOf((*PacketStatusPing)(nil)).Elem()
 }
 
 func (player *Player) HandlePacket(id int, length int) (packet Packet, err error) {

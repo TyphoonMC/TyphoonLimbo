@@ -54,6 +54,25 @@ func (player *Player) ReadUInt16() (i uint16, err error){
 	return binary.BigEndian.Uint16(buff), nil
 }
 
+func (player *Player) ReadUInt64() (i uint64, err error){
+	buff := player.io.buffer[:8]
+	_, err = io.ReadFull(player.io.rdr, buff)
+	if err != nil {
+		return 0, err
+	}
+	return binary.BigEndian.Uint64(buff), nil
+}
+
+func (player *Player) WriteUInt64(i uint64) (err error){
+	buff := player.io.buffer[:8]
+	binary.BigEndian.PutUint64(buff, i)
+	_, err = player.io.wtr.Write(buff)
+	if err != nil {
+		return err
+	}
+	return
+}
+
 func (player *Player) ReadString() (s string, err error){
 	length, err := player.ReadVarInt()
 	if err != nil {

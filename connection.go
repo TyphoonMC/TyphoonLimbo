@@ -13,7 +13,7 @@ const (
 	PLAY
 )
 
-type Protocol uint8
+type Protocol uint16
 const (
 	V1_10 Protocol = 210
 )
