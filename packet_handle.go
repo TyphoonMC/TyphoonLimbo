@@ -58,10 +58,13 @@ func (packet *PacketStatusRequest) Write(player *Player) (err error) {
 	return
 }
 func (packet *PacketStatusRequest) Handle(player *Player) {
-	protocol := player.protocol
+	protocol := COMPATIBLE_PROTO[0]
+	if IsCompatible(player.protocol) {
+		protocol = player.protocol
+	}
 
 	response := PacketStatusResponse{
-		response: fmt.Sprintf(`{"version":{"name":"Typhoon 1.10","protocol":%d},"players":{"max":10000,"online":%d,"sample":[]},"description":{"text":"TyphoonLimbo v0.1"},"favicon":""}`, protocol, len(players)),
+		response: fmt.Sprintf(`{"version":{"name":"Typhoon","protocol":%d},"players":{"max":10000,"online":%d,"sample":[]},"description":{"text":"TyphoonLimbo v0.1"},"favicon":""}`, protocol, len(players)),
 	}
 	player.WritePacket(&response)
 	return
@@ -133,6 +136,11 @@ func (packet *PacketLoginStart) Write(player *Player) (err error) {
 	return
 }
 func (packet *PacketLoginStart) Handle(player *Player) {
+	if !IsCompatible(player.protocol) {
+		player.LoginKick("Incompatible version")
+		return
+	}
+
 	player.name = packet.username
 
 	success := PacketLoginSuccess{
@@ -147,6 +155,27 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 	return
 }
 func (packet *PacketLoginStart) Id() int {
+	return 0x00
+}
+
+type PacketLoginDisconnect struct {
+	component string
+}
+func (packet *PacketLoginDisconnect) Read(player *Player) (err error) {
+	return
+}
+func (packet *PacketLoginDisconnect) Write(player *Player) (err error) {
+	err = player.WriteString(packet.component)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketLoginDisconnect) Handle(player *Player) {
+	return
+}
+func (packet *PacketLoginDisconnect) Id() int {
 	return 0x00
 }
 

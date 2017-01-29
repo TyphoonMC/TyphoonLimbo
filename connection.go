@@ -15,8 +15,29 @@ const (
 
 type Protocol uint16
 const (
-	V1_10 Protocol = 210
+	V1_7_2 Protocol = 4
+	V1_7_6 = 5
+	V1_8 = 47
+	V1_9 = 107
+	V1_9_1 = 108
+	V1_9_2 = 109
+	V1_9_3 = 110
+	V1_10 = 210
+	V1_11 = 315
+	V1_11_1 = 316
 )
+var (
+	COMPATIBLE_PROTO = [...]Protocol{V1_10,V1_11,V1_11_1}
+)
+
+func IsCompatible(proto Protocol) bool {
+	for _, x := range COMPATIBLE_PROTO {
+		if x == proto {
+			return true
+		}
+	}
+	return false
+}
 
 type InAddr struct {
 	address string

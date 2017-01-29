@@ -137,3 +137,12 @@ func (player *Player) Kick(s string) {
 	player.WritePacket(&disconnect)
 	player.conn.Close()
 }
+
+func (player *Player) LoginKick(s string) {
+	msg := fmt.Sprintf(`{"text": "%s"}`, s)
+	disconnect := PacketLoginDisconnect{
+		component: msg,
+	}
+	player.WritePacket(&disconnect)
+	player.conn.Close()
+}
