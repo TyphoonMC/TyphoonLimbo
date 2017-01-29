@@ -6,7 +6,7 @@ var (
 	handlers map[string]*list.List = make(map[string]*list.List)
 )
 
-func registerEvent(event string, callback func(interface{})) {
+func RegisterEvent(event string, callback func(interface{})) {
 	var l *list.List = handlers[event]
 	if l == nil {
 		l = list.New()
@@ -15,7 +15,7 @@ func registerEvent(event string, callback func(interface{})) {
 	l.PushBack(callback)
 }
 
-func callEvent(event string, value interface{}) {
+func CallEvent(event string, value interface{}) {
 	var l *list.List = handlers[event]
 	if l != nil {
 		for handler := l.Front(); handler != nil; handler = handler.Next() {

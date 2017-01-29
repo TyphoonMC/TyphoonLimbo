@@ -7,7 +7,7 @@ import (
 
 type ConnReadWrite struct {
 	rdr io.Reader
-	wtr io.ByteWriter
+	wtr io.Writer
 	buffer [16]byte
 }
 
@@ -19,7 +19,7 @@ func (rdrwtr ConnReadWrite) ReadByte() (b byte, err error) {
 	return buff[0], nil
 }
 
-func (player *Player) readByte() (b byte, err error){
+func (player *Player) ReadByte() (b byte, err error){
 	buff := player.io.buffer[:1]
 	if _, err := io.ReadFull(player.conn, buff); err != nil {
 		return 0, err
@@ -27,7 +27,7 @@ func (player *Player) readByte() (b byte, err error){
 	return buff[0], nil
 }
 
-func (player *Player) readVarInt() (i int, err error){
+func (player *Player) ReadVarInt() (i int, err error){
 	v, err := binary.ReadUvarint(player.io)
 	if err != nil {
 		return 0, err
@@ -35,7 +35,17 @@ func (player *Player) readVarInt() (i int, err error){
 	return int(v), nil
 }
 
-func (player *Player) readUInt16() (i uint16, err error){
+func (player *Player) WriteVarInt(i int) (err error){
+	buff := player.io.buffer[:]
+	length := binary.PutUvarint(buff, uint64(i))
+	_, err = player.io.wtr.Write(buff[:length])
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (player *Player) ReadUInt16() (i uint16, err error){
 	buff := player.io.buffer[:2]
 	_, err = io.ReadFull(player.io.rdr, buff)
 	if err != nil {
@@ -44,8 +54,8 @@ func (player *Player) readUInt16() (i uint16, err error){
 	return binary.BigEndian.Uint16(buff), nil
 }
 
-func (player *Player) readString() (s string, err error){
-	length, err := player.readVarInt()
+func (player *Player) ReadString() (s string, err error){
+	length, err := player.ReadVarInt()
 	if err != nil {
 		return "", err
 	}
@@ -55,4 +65,17 @@ func (player *Player) readString() (s string, err error){
 		return "", err
 	}
 	return string(buffer), nil
+}
+
+func (player *Player) WriteString(s string) (err error){
+	buff := []byte(s)
+	err = player.WriteVarInt(len(buff))
+	if err != nil {
+		return err
+	}
+	_, err = player.io.wtr.Write(buff)
+	if err != nil {
+		return err
+	}
+	return nil
 }

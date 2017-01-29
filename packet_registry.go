@@ -10,28 +10,30 @@ var (
 )
 
 type Packet interface {
-	write(*Player) error
-	read(*Player) error
-	handle(*Player)
+	Write(*Player) error
+	Read(*Player) error
+	Handle(*Player)
+	Id() int
 }
 
-func packetTypeHash(state State, id int) int64 {
+func PacketTypeHash(state State, id int) int64 {
 	return int64(id)^(int64(state) << 32)
 }
 
-func initPackets() {
-	packets[packetTypeHash(HANDSHAKING, 0x00)] = reflect.TypeOf((*PacketHandshake)(nil)).Elem()
+func InitPackets() {
+	packets[PacketTypeHash(HANDSHAKING, 0x00)] = reflect.TypeOf((*PacketHandshake)(nil)).Elem()
+	packets[PacketTypeHash(STATUS, 0x00)] = reflect.TypeOf((*PacketStatusRequest)(nil)).Elem()
 }
 
-func (player *Player) handlePacket(id int, length int) (packet Packet, err error) {
-	typ := packets[packetTypeHash(player.state, id)];
+func (player *Player) HandlePacket(id int, length int) (packet Packet, err error) {
+	typ := packets[PacketTypeHash(player.state, id)];
 
 	if typ == nil {
 		return nil, errors.New("Unknown packet")
 	}
 
 	packet, _ = reflect.New(typ).Interface().(Packet)
-	if err = packet.read(player); err != nil {
+	if err = packet.Read(player); err != nil {
 		return nil, err
 	}
 	return

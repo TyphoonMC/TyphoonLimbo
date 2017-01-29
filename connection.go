@@ -3,6 +3,7 @@ package main
 import (
 	"net"
 	"log"
+	"bytes"
 )
 
 type State int8
@@ -31,28 +32,32 @@ type Player struct {
 	inaddr InAddr
 }
 
-func (player *Player) readPacket() (packet Packet, err error){
-	length, err := player.readVarInt()
+func (player *Player) ReadPacket() (packet Packet, err error){
+	length, err := player.ReadVarInt()
 	if err != nil {
 		log.Print(err)
 		return
 	}
 	log.Println("Packet size: ", length)
 
-	id, err := player.readVarInt()
+	id, err := player.ReadVarInt()
 	if err != nil {
 		log.Print(err)
 		return
 	}
 	log.Println("Packet id: ", id)
 
-	packet, err = player.handlePacket(id, length)
+	packet, err = player.HandlePacket(id, length)
 	if err != nil {
 		log.Print(err)
 		return
 	} else if packet != nil {
 		log.Println("Packet: ", packet)
-		packet.handle(player)
+		packet.Handle(player)
 	}
 	return
+}
+
+func (player *Player) WritePacket(packet Packet) (err error){
+	//TODO
 }

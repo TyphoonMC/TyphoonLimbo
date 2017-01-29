@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	initPackets()
+	InitPackets()
 
 	ln, err := net.Listen("tcp", ":25565") //TODO config file for port definition
 	if err != nil {
@@ -19,12 +19,12 @@ func main() {
 		if err != nil {
 			log.Print(err)
 		} else {
-			go handleConnection(conn)
+			go HandleConnection(conn)
 		}
 	}
 }
 
-func handleConnection(conn net.Conn) {
+func HandleConnection(conn net.Conn) {
 	log.Printf("%s connected.", conn.RemoteAddr().String())
 
 	player := &Player {
@@ -41,11 +41,13 @@ func handleConnection(conn net.Conn) {
 		},
 	}
 
-	packet, err := player.readPacket()
-	if err != nil {
-		conn.Close()
-		return
-	}
+	for {
+		packet, err := player.ReadPacket()
+		if err != nil {
+			conn.Close()
+			break
+		}
 
-	callEvent("packetReceived", packet)
+		CallEvent("packetReceived", packet)
+	}
 }
