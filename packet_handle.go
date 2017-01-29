@@ -142,7 +142,7 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 	player.WritePacket(&success)
 	player.state = PLAY
 
-	player.kick("Not implemented yet..")
+	//player.Kick("Not implemented yet..")
 	return
 }
 func (packet *PacketLoginStart) Id() int {
@@ -201,6 +201,11 @@ type PacketPlayKeepAlive struct {
 	id int
 }
 func (packet *PacketPlayKeepAlive) Read(player *Player) (err error) {
+	packet.id, err = player.ReadVarInt()
+	if err != nil {
+		log.Print(err)
+		return
+	}
 	return
 }
 func (packet *PacketPlayKeepAlive) Write(player *Player) (err error) {
@@ -212,8 +217,12 @@ func (packet *PacketPlayKeepAlive) Write(player *Player) (err error) {
 	return
 }
 func (packet *PacketPlayKeepAlive) Handle(player *Player) {
+	if player.keepalive != packet.id {
+		player.Kick("Invalid keepalive")
+	}
+	player.keepalive = 0
 	return
 }
 func (packet *PacketPlayKeepAlive) Id() int {
-	return 0x1E
+	return 0x1F
 }

@@ -65,6 +65,25 @@ func (player *Player) WriteUInt16(i uint16) (err error){
 	return
 }
 
+func (player *Player) ReadUInt32() (i uint32, err error){
+	buff := player.io.buffer[:4]
+	_, err = io.ReadFull(player.io.rdr, buff)
+	if err != nil {
+		return 0, err
+	}
+	return binary.BigEndian.Uint32(buff), nil
+}
+
+func (player *Player) WriteUInt32(i uint32) (err error){
+	buff := player.io.buffer[:4]
+	binary.BigEndian.PutUint32(buff, i)
+	_, err = player.io.wtr.Write(buff)
+	if err != nil {
+		return err
+	}
+	return
+}
+
 func (player *Player) ReadUInt64() (i uint64, err error){
 	buff := player.io.buffer[:8]
 	_, err = io.ReadFull(player.io.rdr, buff)
@@ -110,7 +129,7 @@ func (player *Player) WriteString(s string) (err error){
 	return nil
 }
 
-func (player *Player) kick(s string) {
+func (player *Player) Kick(s string) {
 	msg := fmt.Sprintf(`{"text": "%s"}`, s)
 	disconnect := PacketPlayDisconnect{
 		component: msg,

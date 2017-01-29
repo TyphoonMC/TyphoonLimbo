@@ -4,6 +4,8 @@ import (
 	"log"
 	"net"
 	"bufio"
+	"time"
+	"math/rand"
 )
 
 var (
@@ -18,6 +20,7 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Println("Server launched.")
+	go KeepAlive()
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
@@ -29,7 +32,32 @@ func main() {
 	}
 }
 
-func HandleConnection(conn net.Conn, uid int) {
+func KeepAlive() {
+	r := rand.New(rand.NewSource(15768735131534))
+	keepalive := &PacketPlayKeepAlive{
+		id: 0,
+	}
+	for {
+		for _, player := range players {
+			if player.state == PLAY {
+				if player.keepalive != 0 {
+					player.Kick("Timed out")
+				}
+
+				id := int(r.Uint32())
+				if id == 0 {
+					id = 1
+				}
+				keepalive.id = id
+				player.keepalive = id
+				player.WritePacket(keepalive)
+			}
+		}
+		time.Sleep(3000000000)
+	}
+}
+
+func HandleConnection(conn net.Conn, id int) {
 	log.Printf("%s connected.", conn.RemoteAddr().String())
 
 	player := &Player {
@@ -46,7 +74,9 @@ func HandleConnection(conn net.Conn, uid int) {
 		},
 		name: "",
 		uuid: "d979912c-bb24-4f23-a6ac-c32985a1e5d3",
+		keepalive: 0,
 	}
+	player.register(id)
 
 	for {
 		packet, err := player.ReadPacket()
@@ -57,6 +87,7 @@ func HandleConnection(conn net.Conn, uid int) {
 		CallEvent("packetReceived", packet)
 	}
 
+	player.unregister(id)
 	conn.Close()
 	log.Printf("%s disconnected.", conn.RemoteAddr().String())
 }

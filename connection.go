@@ -31,6 +31,7 @@ type Player struct {
 	inaddr InAddr
 	name string
 	uuid string
+	keepalive int
 }
 
 func (player *Player) ReadPacket() (packet Packet, err error){
