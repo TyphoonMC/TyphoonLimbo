@@ -12,10 +12,8 @@ func newVarBuffer(size int) *VarBuffer {
 	}
 }
 
-func arraycpy(dst []byte, dstindex int, src []byte, srcindex int, length int) {
-	for i := 0; i < length; i++ {
-		dst[i+dstindex] = src[i+srcindex]
-	}
+func array_cpy(dst []byte, dstindex int, src []byte, srcindex int, length int) {
+	copy(dst[dstindex:dstindex+length], src[srcindex:srcindex+length])
 	return
 }
 
@@ -38,7 +36,7 @@ func (buff *VarBuffer) Write(p []byte) (n int, err error) {
 		copy(nbuffer, buff.buffer)
 		buff.buffer = nbuffer
 	}
-	arraycpy(buff.buffer, buff.used, p, 0, len(p))
+	array_cpy(buff.buffer, buff.used, p, 0, len(p))
 	buff.used += len(p)
 	return len(p), nil
 }
