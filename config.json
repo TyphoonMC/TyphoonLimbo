@@ -1,0 +1,5 @@
+{
+  "port": 25565,
+  "max_players": 10000,
+  "motd": "    Test limbo server"
+}
