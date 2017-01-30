@@ -4,6 +4,7 @@ import (
 	"io"
 	"encoding/binary"
 	"fmt"
+	"math"
 )
 
 type ConnReadWrite struct {
@@ -138,6 +139,44 @@ func (player *Player) ReadUInt64() (i uint64, err error){
 func (player *Player) WriteUInt64(i uint64) (err error){
 	buff := player.io.buffer[:8]
 	binary.BigEndian.PutUint64(buff, i)
+	_, err = player.io.wtr.Write(buff)
+	if err != nil {
+		return err
+	}
+	return
+}
+
+func (player *Player) ReadFloat32() (i float32, err error){
+	buff := player.io.buffer[:4]
+	_, err = io.ReadFull(player.io.rdr, buff)
+	if err != nil {
+		return 0, err
+	}
+	return math.Float32frombits(binary.BigEndian.Uint32(buff)), nil
+}
+
+func (player *Player) WriteFloat32(i float32) (err error){
+	buff := player.io.buffer[:4]
+	binary.BigEndian.PutUint32(buff, math.Float32bits(i))
+	_, err = player.io.wtr.Write(buff)
+	if err != nil {
+		return err
+	}
+	return
+}
+
+func (player *Player) ReadFloat64() (i float64, err error){
+	buff := player.io.buffer[:8]
+	_, err = io.ReadFull(player.io.rdr, buff)
+	if err != nil {
+		return 0, err
+	}
+	return math.Float64frombits(binary.BigEndian.Uint64(buff)), nil
+}
+
+func (player *Player) WriteFloat64(i float64) (err error){
+	buff := player.io.buffer[:8]
+	binary.BigEndian.PutUint64(buff, math.Float64bits(i))
 	_, err = player.io.wtr.Write(buff)
 	if err != nil {
 		return err

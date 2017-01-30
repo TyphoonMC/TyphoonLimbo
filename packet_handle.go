@@ -142,6 +142,19 @@ func (packet *PacketLoginStart) Read(player *Player) (err error) {
 func (packet *PacketLoginStart) Write(player *Player) (err error) {
 	return
 }
+var(
+	join_game = PacketPlayJoinGame{
+		entity_id: 0,
+		gamemode: SPECTATOR,
+		dimension: END,
+		difficulty: NORMAL,
+		level_type: DEFAULT,
+		max_players: 0xFF,
+		reduced_debug: false,
+
+	}
+	position_look = PacketPlayerPositionLook{}
+)
 func (packet *PacketLoginStart) Handle(player *Player) {
 	if !IsCompatible(player.protocol) {
 		player.LoginKick("Incompatible version")
@@ -164,17 +177,8 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 	player.state = PLAY
 	player.register()
 
-	join_game := PacketPlayJoinGame{
-		entity_id: 0,
-		gamemode: SPECTATOR,
-		dimension: OVERWORLD,
-		difficulty: NORMAL,
-		level_type: DEFAULT,
-		max_players: 0xFF,
-		reduced_debug: false,
-
-	}
 	player.WritePacket(&join_game)
+	player.WritePacket(&position_look)
 	//player.Kick("Not implemented yet..")
 	return
 }
@@ -359,4 +363,61 @@ func (packet *PacketPlayJoinGame) Handle(player *Player) {
 }
 func (packet *PacketPlayJoinGame) Id() int {
 	return 0x23
+}
+
+type PacketPlayerPositionLook struct {
+	x float64
+	y float64
+	z float64
+	yaw float32
+	pitch float32
+	flags uint8
+	teleport_id int
+}
+func (packet *PacketPlayerPositionLook) Read(player *Player) (err error) {
+	return
+}
+func (packet *PacketPlayerPositionLook) Write(player *Player) (err error) {
+	err = player.WriteFloat64(packet.x)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteFloat64(packet.y)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteFloat64(packet.z)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteFloat32(packet.yaw)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteFloat32(packet.pitch)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteUInt8(packet.flags)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteVarInt(packet.teleport_id)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketPlayerPositionLook) Handle(player *Player) {
+	return
+}
+func (packet *PacketPlayerPositionLook) Id() int {
+	return 0x2E
 }
