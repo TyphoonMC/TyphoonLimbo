@@ -46,6 +46,48 @@ func (player *Player) WriteVarInt(i int) (err error){
 	return nil
 }
 
+func (player *Player) ReadBool() (b bool, err error){
+	buff := player.io.buffer[:1]
+	_, err = io.ReadFull(player.io.rdr, buff)
+	if err != nil {
+		return false, err
+	}
+	return buff[0] == 0x01, nil
+}
+
+func (player *Player) WriteBool(b bool) (err error){
+	buff := player.io.buffer[:1]
+	if b {
+		buff[0] = 0x01
+	} else {
+		buff[0] = 0x00
+	}
+	_, err = player.io.wtr.Write(buff)
+	if err != nil {
+		return err
+	}
+	return
+}
+
+func (player *Player) ReadUInt8() (i uint8, err error){
+	buff := player.io.buffer[:1]
+	_, err = io.ReadFull(player.io.rdr, buff)
+	if err != nil {
+		return 0, err
+	}
+	return buff[0], nil
+}
+
+func (player *Player) WriteUInt8(i uint8) (err error){
+	buff := player.io.buffer[:1]
+	buff[0] = i
+	_, err = player.io.wtr.Write(buff)
+	if err != nil {
+		return err
+	}
+	return
+}
+
 func (player *Player) ReadUInt16() (i uint16, err error){
 	buff := player.io.buffer[:2]
 	_, err = io.ReadFull(player.io.rdr, buff)

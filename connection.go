@@ -13,6 +13,38 @@ const (
 	PLAY
 )
 
+type Gamemode uint8
+const (
+	SURVIVAL Gamemode = iota
+	CREATIVE
+	ADVENTURE
+	SPECTATOR
+)
+
+type Dimension uint32
+const (
+	NETHER Dimension = 0xFF
+	OVERWORLD Dimension = 0
+	END Dimension = 1
+)
+
+type Difficulty uint8
+const (
+	PEACEFUL Difficulty = iota
+	EASY
+	NORMAL
+	HARD
+)
+
+type LevelType string
+const (
+	DEFAULT LevelType = "default"
+	FLAT LevelType = "flat"
+	LARGE_BIOMES LevelType = "largeBiomes"
+	AMPLIFIED LevelType = "amplified"
+	DEFAULT_1_1 LevelType = "default_1_1"
+)
+
 type Protocol uint16
 const (
 	V1_7_2 Protocol = 4

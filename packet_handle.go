@@ -164,6 +164,17 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 	player.state = PLAY
 	player.register()
 
+	join_game := PacketPlayJoinGame{
+		entity_id: 0,
+		gamemode: SPECTATOR,
+		dimension: OVERWORLD,
+		difficulty: NORMAL,
+		level_type: DEFAULT,
+		max_players: 0xFF,
+		reduced_debug: false,
+
+	}
+	player.WritePacket(&join_game)
 	//player.Kick("Not implemented yet..")
 	return
 }
@@ -268,4 +279,61 @@ func (packet *PacketPlayKeepAlive) Handle(player *Player) {
 }
 func (packet *PacketPlayKeepAlive) Id() int {
 	return 0x1F
+}
+
+type PacketPlayJoinGame struct {
+	entity_id uint32
+	gamemode Gamemode
+	dimension Dimension
+	difficulty Difficulty
+	max_players uint8
+	level_type LevelType
+	reduced_debug bool
+}
+func (packet *PacketPlayJoinGame) Read(player *Player) (err error) {
+	return
+}
+func (packet *PacketPlayJoinGame) Write(player *Player) (err error) {
+	err = player.WriteUInt32(packet.entity_id)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteUInt8(uint8(packet.gamemode))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteUInt32(uint32(packet.dimension))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteUInt8(uint8(packet.difficulty))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteUInt8(packet.max_players)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteString(string(packet.level_type))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteBool(packet.reduced_debug)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketPlayJoinGame) Handle(player *Player) {
+	return
+}
+func (packet *PacketPlayJoinGame) Id() int {
+	return 0x23
 }
