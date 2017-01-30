@@ -281,6 +281,29 @@ func (packet *PacketPlayKeepAlive) Id() int {
 	return 0x1F
 }
 
+type PacketPlayChunkData struct {
+	x uint32
+	y uint32
+	ground_up_continuous bool
+	primary_bit_mask int
+	data_size int
+	data []ChunkSection
+	biomes [256]byte
+	block_entities_length int
+}
+func (packet *PacketPlayChunkData) Read(player *Player) (err error) {
+	return
+}
+func (packet *PacketPlayChunkData) Write(player *Player) (err error) {
+	return
+}
+func (packet *PacketPlayChunkData) Handle(player *Player) {
+	return
+}
+func (packet *PacketPlayChunkData) Id() int {
+	return 0x20
+}
+
 type PacketPlayJoinGame struct {
 	entity_id uint32
 	gamemode Gamemode

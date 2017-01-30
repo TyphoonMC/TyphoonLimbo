@@ -33,6 +33,8 @@ func (player *Player) HandlePacket(id int, length int) (packet Packet, err error
 
 	if typ == nil {
 		log.Printf("Unknown packet #%d\n", id)
+		buff := make([]byte, length)
+		player.io.rdr.Read(buff)
 		return nil, nil
 	}
 

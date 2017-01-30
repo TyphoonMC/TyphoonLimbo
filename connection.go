@@ -45,6 +45,16 @@ const (
 	DEFAULT_1_1 LevelType = "default_1_1"
 )
 
+type ChunkSection struct {
+	bits_per_block uint8
+	palette_length int
+	palette []int
+	data_array_length int
+	data_array []uint64
+	block_light []uint8
+	sky_light []uint8
+}
+
 type Protocol uint16
 const (
 	V1_7_2 Protocol = 4
