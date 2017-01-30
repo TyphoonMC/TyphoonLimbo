@@ -148,6 +148,12 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 		return
 	}
 
+	max_players := int(config["max_players"].(float64))
+
+	if max_players <= players_count && config["restricted"].(bool) {
+		player.LoginKick("Server is full")
+	}
+
 	player.name = packet.username
 
 	success := PacketLoginSuccess{
