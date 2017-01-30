@@ -63,11 +63,15 @@ func (packet *PacketStatusRequest) Handle(player *Player) {
 		protocol = player.protocol
 	}
 
-	max_players := 10000
-	motd := "A TyphoonLimbo server"
+	max_players := int(config["max_players"].(float64))
+	motd := config["motd"].(string)
+
+	if max_players < players_count && !config["restricted"].(bool) {
+		max_players = players_count
+	}
 
 	response := PacketStatusResponse{
-		response: fmt.Sprintf(`{"version":{"name":"Typhoon","protocol":%d},"players":{"max":%d,"online":%d,"sample":[]},"description":{"text":"%s"},"favicon":""}`, protocol, len(players), max_players, motd),
+		response: fmt.Sprintf(`{"version":{"name":"Typhoon","protocol":%d},"players":{"max":%d,"online":%d,"sample":[]},"description":{"text":"%s"},"favicon":""}`, protocol, max_players, players_count, motd),
 	}
 	player.WritePacket(&response)
 	return

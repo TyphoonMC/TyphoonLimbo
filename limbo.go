@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"time"
 	"math/rand"
+	"fmt"
 )
 
 var (
@@ -13,13 +14,15 @@ var (
 )
 
 func main() {
+	InitConfig()
 	InitPackets()
 
-	ln, err := net.Listen("tcp", ":25565") //TODO config file for port definition
+	port := int(config["port"].(float64))
+	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Server launched.")
+	log.Println("Server launched on port", port)
 	go KeepAlive()
 	for {
 		conn, err := ln.Accept()

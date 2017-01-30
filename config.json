@@ -1,5 +1,6 @@
 {
   "port": 25565,
-  "max_players": 10000,
-  "motd": "    Test limbo server"
+  "max_players": 0,
+  "motd": "TyphoonLimbo server",
+  "restricted": false
 }
