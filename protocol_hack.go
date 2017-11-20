@@ -3,7 +3,7 @@ package main
 var (
 	clientbound = make(map[Protocol]map[int]int)
   serverbound = make(map[Protocol]map[int]int)
-	HACKS = [...]Protocol{V1_12,V1_12_1}
+	HACKS = [...]Protocol{V1_12,V1_12_1,V1_12_2}
 )
 
 func InitHacks() {
@@ -42,6 +42,10 @@ func InitHacks() {
   for i := 0x01; i <= 0x11; i++ {
     serverbound[V1_12_1][i] = serverbound[V1_12][i+1]
   }
+
+  // Hack 1.12.2
+	clientbound[V1_12_2] = clientbound[V1_12_1]
+  serverbound[V1_12_2] = serverbound[V1_12_1]
 }
 
 func lastClientbound(proto Protocol, i int) int {

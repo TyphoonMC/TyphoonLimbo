@@ -322,7 +322,13 @@ type PacketPlayKeepAlive struct {
 	id int
 }
 func (packet *PacketPlayKeepAlive) Read(player *Player) (err error) {
-	packet.id, err = player.ReadVarInt()
+	if player.protocol >= V1_12_2 {
+		id, stt := player.ReadUInt64()
+		packet.id = int(id)
+		err = stt
+	} else {
+		packet.id, err = player.ReadVarInt()
+	}
 	if err != nil {
 		log.Print(err)
 		return
@@ -330,7 +336,11 @@ func (packet *PacketPlayKeepAlive) Read(player *Player) (err error) {
 	return
 }
 func (packet *PacketPlayKeepAlive) Write(player *Player) (err error) {
-	err = player.WriteVarInt(packet.id)
+	if player.protocol >= V1_12_2 {
+		err = player.WriteUInt64(uint64(packet.id))
+	} else {
+		err = player.WriteVarInt(packet.id)
+	}
 	if err != nil {
 		log.Print(err)
 		return
