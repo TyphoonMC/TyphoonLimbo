@@ -116,7 +116,7 @@ const (
 	V1_12_2 = 340
 )
 var (
-	COMPATIBLE_PROTO = [...]Protocol{V1_10,V1_11,V1_11_1,V1_12}
+	COMPATIBLE_PROTO = [...]Protocol{V1_10,V1_11,V1_11_1,V1_12,V1_12_1,V1_12_2}
 )
 
 func IsCompatible(proto Protocol) bool {
@@ -155,7 +155,7 @@ func (player *Player) ReadPacket() (packet Packet, err error){
 	if err != nil {
 		return
 	}
-	id = player.Hack(id)
+	id = player.HackServerbound(id)
 
 	packet, err = player.HandlePacket(id, length)
 	if err != nil {
@@ -177,7 +177,7 @@ func (player *Player) WritePacket(packet Packet) (err error){
 		wtr: buff,
 	}
 
-	id := packet.Id()
+	id := player.HackClientbound(packet.Id())
 	player.WriteVarInt(id)
 	packet.Write(player)
 
