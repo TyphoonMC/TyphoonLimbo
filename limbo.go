@@ -53,7 +53,7 @@ func KeepAlive() {
 				player.WritePacket(keepalive)
 			}
 		}
-		time.Sleep(20000000000)
+		time.Sleep(5000000000)
 	}
 }
 
