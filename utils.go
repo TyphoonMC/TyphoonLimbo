@@ -198,6 +198,23 @@ func (player *Player) ReadString() (s string, err error){
 	return string(buffer), nil
 }
 
+func (player *Player) ReadStringLimited(max int) (s string, err error){
+	length, err := player.ReadVarInt()
+	if err != nil {
+		return "", err
+	}
+	if length > max {
+		player.Kick("Invalid packet")
+		return "", nil
+	}
+	buffer := make([]byte,length)
+	_, err = io.ReadFull(player.io.rdr, buffer)
+	if err != nil {
+		return "", err
+	}
+	return string(buffer), nil
+}
+
 func (player *Player) WriteString(s string) (err error){
 	buff := []byte(s)
 	err = player.WriteVarInt(len(buff))

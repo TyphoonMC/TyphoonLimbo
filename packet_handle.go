@@ -20,7 +20,7 @@ func (packet *PacketHandshake) Read(player *Player) (err error) {
 		return
 	}
 	packet.protocol = Protocol(protocol)
-	packet.address, err = player.ReadString()
+	packet.address, err = player.ReadStringLimited(255)
 	if err != nil {
 		log.Print(err)
 		return
@@ -73,7 +73,7 @@ func (packet *PacketStatusRequest) Handle(player *Player) {
 	}
 
 	response := PacketStatusResponse{
-		response: fmt.Sprintf(`{"version":{"name":"Typhoon","protocol":%d},"players":{"max":%d,"online":%d,"sample":[]},"description":{"text":"%s"},"favicon":""}`, protocol, max_players, players_count, motd),
+		response: fmt.Sprintf(`{"version":{"name":"Typhoon","protocol":%d},"players":{"max":%d,"online":%d,"sample":[]},"description":{"text":"%s"},"favicon":""}`, protocol, max_players, players_count, strings.Replace(motd, `"`, `\"`, -1)),
 	}
 	player.WritePacket(&response)
 	return
@@ -134,7 +134,7 @@ type PacketLoginStart struct {
 	username string
 }
 func (packet *PacketLoginStart) Read(player *Player) (err error) {
-	packet.username, err = player.ReadString()
+	packet.username, err = player.ReadStringLimited(16)
 	if err != nil {
 		log.Print(err)
 		return
@@ -247,7 +247,7 @@ type PacketPlayChat struct {
 	message string
 }
 func (packet *PacketPlayChat) Read(player *Player) (err error) {
-	packet.message, err = player.ReadString()
+	packet.message, err = player.ReadStringLimited(32767)
 	if err != nil {
 		log.Print(err)
 		return
@@ -260,7 +260,7 @@ func (packet *PacketPlayChat) Write(player *Player) (err error) {
 func (packet *PacketPlayChat) Handle(player *Player) {
 	if len(packet.message) > 0 && packet.message[0] != '/' {
 		player.WritePacket(&PacketPlayMessage{
-			component: fmt.Sprintf(`{"text":"%s: %s"}`, player.name, strings.Replace(packet.message, `"`, `\"`, -1)),
+			component: fmt.Sprintf(`{"text":"<%s> %s"}`, player.name, strings.Replace(packet.message, `"`, `\"`, -1)),
 			position: CHAT_BOX,
 		})
 	}

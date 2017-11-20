@@ -33,7 +33,9 @@ func (player *Player) HandlePacket(id int, length int) (packet Packet, err error
 	typ := packets[PacketTypeHash(player.state, id)];
 
 	if typ == nil {
-		log.Printf("Unknown packet #%d\n", id)
+		if config["logs"].(bool) {
+			log.Printf("Unknown packet #%d\n", id)
+		}
 		buff := make([]byte, length)
 		player.io.rdr.Read(buff)
 		return nil, nil
