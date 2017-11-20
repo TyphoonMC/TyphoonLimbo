@@ -3,5 +3,7 @@
   "max_players": 100,
   "motd": "TyphoonLimbo server",
   "restricted": false,
-  "join_message": "eyJ0ZXh0IjoiWW91IGFyZSBpbnRvIHRoZSBsaW1ibyIsImNvbG9yIjoiZGFya19yZWQifQ=="
+  "logs": true,
+  "join_message": "eyJ0ZXh0IjoiWW91IGFyZSBpbnRvIHRoZSBsaW1ibyIsImNvbG9yIjoiZGFya19yZWQifQ==",
+  "boss_bar": "eyJ0ZXh0IjoiWW91IGFyZSBpbnRvIHRoZSBsaW1ibyIsImNvbG9yIjoiZGFya19yZWQifQ=="
 }

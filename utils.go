@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
+	"github.com/satori/go.uuid"
 )
 
 type ConnReadWrite struct {
@@ -204,6 +205,30 @@ func (player *Player) WriteString(s string) (err error){
 		return err
 	}
 	_, err = player.io.wtr.Write(buff)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (player *Player) WriteStringRestricted(s string, max int) (err error){
+	buff := []byte(s)
+	if(len(buff) > max) {
+		buff = buff[:max];
+	}
+	err = player.WriteVarInt(len(buff))
+	if err != nil {
+		return err
+	}
+	_, err = player.io.wtr.Write(buff)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (player *Player) WriteUUID(uid uuid.UUID) (err error){
+	_, err = player.io.wtr.Write(uid[:])
 	if err != nil {
 		return err
 	}

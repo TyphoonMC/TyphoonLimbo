@@ -10,7 +10,7 @@ A limbo server is a connection keeper. You are only able to connect, nothing els
 
 Confirmed:
 
-* 1.10, 1.10.1,  1.10.2 (210)
+* 1.10, 1.10.1, 1.10.2 (210)
 * 1.11 (315)
 * 1.11.1, 1.11.2 (316)
 
@@ -18,6 +18,7 @@ Some other protocol versions may work
 
 #### How to build and start
 ```shell
+go get github.com/satori/go.uuid
 go build
 ./TyphoonLimbo
 ```

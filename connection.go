@@ -43,6 +43,43 @@ const (
 	ACTION_BAR
 )
 
+type ScoreboardPosition uint8
+const (
+	LIST ScoreboardPosition = iota
+	SIDEBAR
+	BELOW_NAME
+)
+
+type BossBarAction int
+const (
+	BOSSBAR_ADD BossBarAction = iota
+	BOSSBAR_REMOVE
+	BOSSBAR_UPDATE_HEALTH
+	BOSSBAR_UPDATE_TITLE
+	BOSSBAR_UPDATE_STYLE
+	BOSSBAR_UPDATE_FLAGS
+)
+
+type BossBarColor int
+const (
+	BOSSBAR_COLOR_PINK BossBarColor = iota
+	BOSSBAR_COLOR_BLUE
+	BOSSBAR_COLOR_RED
+	BOSSBAR_COLOR_GREEN
+	BOSSBAR_COLOR_YELLOW
+	BOSSBAR_COLOR_PURPLE
+	BOSSBAR_COLOR_WHITE
+)
+
+type BossBarDivision int
+const (
+	BOSSBAR_NODIVISION BossBarDivision = iota
+	BOSSBAR_6NOTCHES
+	BOSSBAR_10NOTCHES
+	BOSSBAR_12NOTCHES
+	BOSSBAR_20NOTCHES
+)
+
 type LevelType string
 const (
 	DEFAULT LevelType = "default"
@@ -120,7 +157,9 @@ func (player *Player) ReadPacket() (packet Packet, err error){
 	if err != nil {
 		return
 	} else if packet != nil {
-		log.Println("->", id, packet)
+		if config["logs"].(bool) {
+			log.Println("->", id, packet)
+		}
 		packet.Handle(player)
 	}
 	return
@@ -145,6 +184,8 @@ func (player *Player) WritePacket(packet Packet) (err error){
 	player.conn.Write(ln.Bytes())
 	player.conn.Write(buff.Bytes())
 
-	log.Println("<-", id, packet)
+	if config["logs"].(bool) {
+		log.Println("<-", id, packet)
+	}
 	return nil
 }
