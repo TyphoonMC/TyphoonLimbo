@@ -31,7 +31,7 @@ func (buff *VarBuffer) Bytes() []byte {
 
 func (buff *VarBuffer) Write(p []byte) (n int, err error) {
 	if len(buff.buffer)-buff.used < len(p) {
-		size := len(p)-len(buff.buffer)-buff.used
+		size := len(p)+(len(buff.buffer)-buff.used)
 		nbuffer := make([]byte, size)
 		copy(nbuffer, buff.buffer)
 		buff.buffer = nbuffer

@@ -36,6 +36,13 @@ const (
 	HARD
 )
 
+type ChatPosition uint8
+const (
+	CHAT_BOX ChatPosition = iota
+	SYSTEM
+	ACTION_BAR
+)
+
 type LevelType string
 const (
 	DEFAULT LevelType = "default"

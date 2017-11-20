@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"fmt"
+	"strings"
 )
 
 type PacketHandshake struct {
@@ -179,6 +180,10 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 
 	player.WritePacket(&join_game)
 	player.WritePacket(&position_look)
+
+	if &join_message != nil {
+		player.WritePacket(&join_message)
+	}
 	//player.Kick("Not implemented yet..")
 	return
 }
@@ -232,6 +237,60 @@ func (packet *PacketLoginSuccess) Handle(player *Player) {
 }
 func (packet *PacketLoginSuccess) Id() int {
 	return 0x02
+}
+
+type PacketPlayChat struct {
+	message string
+}
+func (packet *PacketPlayChat) Read(player *Player) (err error) {
+	packet.message, err = player.ReadString()
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketPlayChat) Write(player *Player) (err error) {
+	return
+}
+func (packet *PacketPlayChat) Handle(player *Player) {
+	if len(packet.message) > 0 && packet.message[0] != '/' {
+		player.WritePacket(&PacketPlayMessage{
+			component: fmt.Sprintf(`{"text":"%s: %s"}`, player.name, strings.Replace(packet.message, `"`, `\"`, -1)),
+			position: CHAT_BOX,
+		})
+	}
+	return
+}
+func (packet *PacketPlayChat) Id() int {
+	return 0x02
+}
+
+type PacketPlayMessage struct {
+	component string
+	position ChatPosition
+}
+func (packet *PacketPlayMessage) Read(player *Player) (err error) {
+	return
+}
+func (packet *PacketPlayMessage) Write(player *Player) (err error) {
+	err = player.WriteString(packet.component)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteUInt8(uint8(packet.position))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketPlayMessage) Handle(player *Player) {
+	return
+}
+func (packet *PacketPlayMessage) Id() int {
+	return 0x0F
 }
 
 type PacketPlayDisconnect struct {

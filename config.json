@@ -2,5 +2,6 @@
   "port": 25565,
   "max_players": 100,
   "motd": "TyphoonLimbo server",
-  "restricted": false
+  "restricted": false,
+  "join_message": "eyJ0ZXh0IjoiWW91IGFyZSBpbnRvIHRoZSBsaW1ibyIsImNvbG9yIjoiZGFya19yZWQifQ=="
 }
