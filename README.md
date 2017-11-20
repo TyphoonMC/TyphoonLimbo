@@ -22,3 +22,6 @@ go get github.com/satori/go.uuid
 go build
 ./TyphoonLimbo
 ```
+
+#### Security concerns
+TyphoonLimbo may actually be used behind a Bungeecord proxy.

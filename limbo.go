@@ -16,6 +16,7 @@ var (
 func main() {
 	InitConfig()
 	InitPackets()
+	InitHacks()
 
 	port := int(config["port"].(float64))
 	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
