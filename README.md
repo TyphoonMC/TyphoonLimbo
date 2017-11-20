@@ -2,7 +2,7 @@
 ### Lightweight minecraft limbo server
 
 ![1.10.X](https://img.shields.io/badge/1.10.X-ready-brightgreen.svg "1.10.X") ![1.11.X](https://img.shields.io/badge/1.11.X-ready-brightgreen.svg "1.11.X")
-![1.12.X](https://img.shields.io/badge/1.12.X-partial-orange.svg "1.12.X")
+![1.12](https://img.shields.io/badge/1.12-partial-orange.svg "1.12")
 ----
 #### What is a limbo server ?
 A limbo server is a connection keeper. You are only able to connect, nothing else
@@ -14,7 +14,7 @@ Confirmed:
 * 1.10, 1.10.1, 1.10.2 (210)
 * 1.11 (315)
 * 1.11.1, 1.11.2 (316)
-* 1.12, 1.12.1 (335)
+* 1.12 (335)
 
 Some other protocol versions may work
 
