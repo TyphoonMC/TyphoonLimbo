@@ -199,6 +199,8 @@ func (player *Player) ReadString() (s string, err error){
 }
 
 func (player *Player) ReadStringLimited(max int) (s string, err error){
+	max = (max*4) + 3
+	
 	length, err := player.ReadVarInt()
 	if err != nil {
 		return "", err

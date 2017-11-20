@@ -20,7 +20,7 @@ func (packet *PacketHandshake) Read(player *Player) (err error) {
 		return
 	}
 	packet.protocol = Protocol(protocol)
-	packet.address, err = player.ReadStringLimited(255)
+	packet.address, err = player.ReadStringLimited(300)
 	if err != nil {
 		log.Print(err)
 		return
