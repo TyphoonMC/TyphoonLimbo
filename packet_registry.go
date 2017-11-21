@@ -36,8 +36,24 @@ func (player *Player) HandlePacket(id int, length int) (packet Packet, err error
 		if config["logs"].(bool) {
 			log.Printf("Unknown packet #%d\n", id)
 		}
-		buff := make([]byte, length)
-		player.io.rdr.Read(buff)
+
+		var buff []byte
+		nbr := 0
+		if length > 500 {
+			buff = make([]byte, 500)
+		} else {
+			buff = make([]byte, length)
+		}
+
+		for nbr < length {
+			if length-nbr > 500 {
+				player.io.rdr.Read(buff)
+				nbr += 500
+			} else {
+				player.io.rdr.Read(buff[:length-nbr])
+				nbr = length
+			}
+		}
 		return nil, nil
 	}
 

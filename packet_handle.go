@@ -283,10 +283,12 @@ func (packet *PacketPlayMessage) Write(player *Player) (err error) {
 		log.Print(err)
 		return
 	}
-	err = player.WriteUInt8(uint8(packet.position))
-	if err != nil {
-		log.Print(err)
-		return
+	if player.protocol > V1_7_6 {
+		err = player.WriteUInt8(uint8(packet.position))
+		if err != nil {
+			log.Print(err)
+			return
+		}
 	}
 	return
 }
@@ -326,6 +328,10 @@ func (packet *PacketPlayKeepAlive) Read(player *Player) (err error) {
 		id, stt := player.ReadUInt64()
 		packet.id = int(id)
 		err = stt
+	} else if player.protocol <= V1_7_6 {
+		id, stt := player.ReadUInt32()
+		packet.id = int(id)
+		err = stt
 	} else {
 		packet.id, err = player.ReadVarInt()
 	}
@@ -338,6 +344,8 @@ func (packet *PacketPlayKeepAlive) Read(player *Player) (err error) {
 func (packet *PacketPlayKeepAlive) Write(player *Player) (err error) {
 	if player.protocol >= V1_12_2 {
 		err = player.WriteUInt64(uint64(packet.id))
+	} else if player.protocol <= V1_7_6 {
+		err = player.WriteUInt32(uint32(packet.id))
 	} else {
 		err = player.WriteVarInt(packet.id)
 	}
@@ -432,10 +440,12 @@ func (packet *PacketPlayJoinGame) Write(player *Player) (err error) {
 		log.Print(err)
 		return
 	}
-	err = player.WriteBool(packet.reduced_debug)
-	if err != nil {
-		log.Print(err)
-		return
+	if player.protocol > V1_7_6 {
+		err = player.WriteBool(packet.reduced_debug)
+		if err != nil {
+			log.Print(err)
+			return
+		}
 	}
 	return
 }

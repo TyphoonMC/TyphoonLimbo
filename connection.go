@@ -117,6 +117,7 @@ const (
 )
 var (
 	COMPATIBLE_PROTO = [...]Protocol{
+		V1_7_2, V1_7_6,
 		V1_8,
 		V1_9, V1_9_1, V1_9_2, V1_9_3,
 		V1_10,

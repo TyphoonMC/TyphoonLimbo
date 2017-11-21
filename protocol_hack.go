@@ -115,6 +115,14 @@ func InitHacks() {
   serverbound[V1_8][0x18] = 0x1B
   serverbound[V1_8][0x08] = 0x1C
 
+  // Hack 1.7.6
+	clientbound[V1_7_6] = clientbound[V1_8]
+  serverbound[V1_7_6] = serverbound[V1_8]
+
+  // Hack 1.7.2
+	clientbound[V1_7_2] = clientbound[V1_7_6]
+  serverbound[V1_7_2] = serverbound[V1_7_6]
+
   // Hack 1.12
   clientbound[V1_12] = make(map[int]int)
   clientbound[V1_12][0x28] = 0x25
