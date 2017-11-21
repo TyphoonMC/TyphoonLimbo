@@ -394,7 +394,11 @@ func (packet *PacketPlayJoinGame) Read(player *Player) (err error) {
 	return
 }
 func (packet *PacketPlayJoinGame) Write(player *Player) (err error) {
-	err = player.WriteUInt32(packet.entity_id)
+	if player.protocol <= V1_9 {
+		err = player.WriteUInt8(uint8(packet.entity_id))
+	} else {
+		err = player.WriteUInt32(packet.entity_id)
+	}
 	if err != nil {
 		log.Print(err)
 		return

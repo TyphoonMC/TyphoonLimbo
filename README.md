@@ -1,6 +1,7 @@
 # TyphoonLimbo
 ### Lightweight minecraft limbo server
 
+![1.9.X](https://img.shields.io/badge/1.9.X-ready-brightgreen.svg "1.9.X")
 ![1.10.X](https://img.shields.io/badge/1.10.X-ready-brightgreen.svg "1.10.X") ![1.11.X](https://img.shields.io/badge/1.11.X-ready-brightgreen.svg "1.11.X")
 ![1.12.X](https://img.shields.io/badge/1.12.X-ready-brightgreen.svg "1.12.X")
 ----
@@ -11,6 +12,10 @@ A limbo server is a connection keeper. You are only able to connect, nothing els
 
 Minecraft compatible versions:
 
+* 1.9 (107)
+* 1.9.1 (108)
+* 1.9.2 (109)
+* 1.9.3, 1.9.4 (110)
 * 1.10, 1.10.1, 1.10.2 (210)
 * 1.11 (315)
 * 1.11.1, 1.11.2 (316)

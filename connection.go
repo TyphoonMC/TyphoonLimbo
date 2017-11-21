@@ -116,7 +116,13 @@ const (
 	V1_12_2 = 340
 )
 var (
-	COMPATIBLE_PROTO = [...]Protocol{V1_10,V1_11,V1_11_1,V1_12,V1_12_1,V1_12_2}
+	COMPATIBLE_PROTO = [...]Protocol{
+		V1_9, V1_9_1, V1_9_2, V1_9_3,
+		V1_10,
+		V1_11, V1_11_1,
+		V1_12, V1_12_1,
+		V1_12_2,
+	}
 )
 
 func IsCompatible(proto Protocol) bool {
