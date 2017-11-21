@@ -48,7 +48,7 @@ func KeepAlive() {
 					player.Kick("Timed out")
 				}
 
-				id := int(r.Uint32())
+				id := int(r.Int31())
 				keepalive.id = id
 				player.keepalive = id
 				player.WritePacket(keepalive)

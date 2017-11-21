@@ -117,6 +117,7 @@ const (
 )
 var (
 	COMPATIBLE_PROTO = [...]Protocol{
+		V1_8,
 		V1_9, V1_9_1, V1_9_2, V1_9_3,
 		V1_10,
 		V1_11, V1_11_1,
@@ -161,7 +162,9 @@ func (player *Player) ReadPacket() (packet Packet, err error){
 	if err != nil {
 		return
 	}
-	id = player.HackServerbound(id)
+	if player.state == PLAY {
+		id = player.HackServerbound(id)
+	}
 
 	packet, err = player.HandlePacket(id, length)
 	if err != nil {
@@ -183,7 +186,13 @@ func (player *Player) WritePacket(packet Packet) (err error){
 		wtr: buff,
 	}
 
-	id := player.HackClientbound(packet.Id())
+	id := packet.Id()
+	if player.state == PLAY {
+		id = player.HackClientbound(id)
+	}
+	if id == -1 {
+		return
+	}
 	player.WriteVarInt(id)
 	packet.Write(player)
 

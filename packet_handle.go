@@ -348,8 +348,12 @@ func (packet *PacketPlayKeepAlive) Write(player *Player) (err error) {
 	return
 }
 func (packet *PacketPlayKeepAlive) Handle(player *Player) {
-	if player.keepalive != packet.id {
-		player.Kick("Invalid keepalive")
+	if player.protocol > V1_8 {
+		if player.keepalive != packet.id {
+			player.Kick("Invalid keepalive")
+		}
+	} else {
+		player.keepalive = packet.id
 	}
 	player.keepalive = 0
 	return
@@ -485,10 +489,12 @@ func (packet *PacketPlayerPositionLook) Write(player *Player) (err error) {
 		log.Print(err)
 		return
 	}
-	err = player.WriteVarInt(packet.teleport_id)
-	if err != nil {
-		log.Print(err)
-		return
+	if player.protocol > V1_8 {
+		err = player.WriteVarInt(packet.teleport_id)
+		if err != nil {
+			log.Print(err)
+			return
+		}
 	}
 	return
 }

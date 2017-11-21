@@ -6,7 +6,7 @@
 ![1.12.X](https://img.shields.io/badge/1.12.X-ready-brightgreen.svg "1.12.X")
 ----
 #### What is a limbo server ?
-A limbo server is a connection keeper. You are only able to connect, nothing else
+A limbo server is a fallback server able to handle a massive amount of simultaneous connections. The player spawns into the void then waits here. It can be used to keep players connected to a network after a lobby crashed or as an afk server.
 
 #### Minecraft protocol support
 
