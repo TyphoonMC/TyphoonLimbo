@@ -1,6 +1,7 @@
 # TyphoonLimbo
 ### Lightweight minecraft limbo server
 
+![1.8.X](https://img.shields.io/badge/1.8.X-ready-brightgreen.svg "1.8.X")
 ![1.9.X](https://img.shields.io/badge/1.9.X-ready-brightgreen.svg "1.9.X")
 ![1.10.X](https://img.shields.io/badge/1.10.X-ready-brightgreen.svg "1.10.X") ![1.11.X](https://img.shields.io/badge/1.11.X-ready-brightgreen.svg "1.11.X")
 ![1.12.X](https://img.shields.io/badge/1.12.X-ready-brightgreen.svg "1.12.X")
@@ -12,6 +13,7 @@ A limbo server is a fallback server able to handle a massive amount of simultane
 
 Minecraft compatible versions:
 
+* 1.8 to 1.8.9 (47)
 * 1.9 (107)
 * 1.9.1 (108)
 * 1.9.2 (109)
