@@ -36,4 +36,4 @@ go build
 ```
 
 #### Security concerns
-TyphoonLimbo may actually be used behind a Bungeecord proxy.
+TyphoonLimbo may be used behind a Bungeecord proxy.
