@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"fmt"
-	"strings"
 	"github.com/satori/go.uuid"
 )
 
@@ -73,7 +72,7 @@ func (packet *PacketStatusRequest) Handle(player *Player) {
 	}
 
 	response := PacketStatusResponse{
-		response: fmt.Sprintf(`{"version":{"name":"Typhoon","protocol":%d},"players":{"max":%d,"online":%d,"sample":[]},"description":{"text":"%s"},"favicon":""}`, protocol, max_players, players_count, strings.Replace(motd, `"`, `\"`, -1)),
+		response: fmt.Sprintf(`{"version":{"name":"Typhoon","protocol":%d},"players":{"max":%d,"online":%d,"sample":[]},"description":{"text":"%s"},"favicon":""}`, protocol, max_players, players_count, JsonEscape(motd)),
 	}
 	player.WritePacket(&response)
 	return
@@ -260,7 +259,7 @@ func (packet *PacketPlayChat) Write(player *Player) (err error) {
 func (packet *PacketPlayChat) Handle(player *Player) {
 	if len(packet.message) > 0 && packet.message[0] != '/' {
 		player.WritePacket(&PacketPlayMessage{
-			component: fmt.Sprintf(`{"text":"<%s> %s"}`, player.name, strings.Replace(packet.message, `"`, `\"`, -1)),
+			component: fmt.Sprintf(`{"text":"<%s> %s"}`, player.name, JsonEscape(packet.message)),
 			position: CHAT_BOX,
 		})
 	}

@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"encoding/binary"
+	"strings"
 	"fmt"
 	"math"
 	"github.com/satori/go.uuid"
@@ -200,7 +201,7 @@ func (player *Player) ReadString() (s string, err error){
 
 func (player *Player) ReadStringLimited(max int) (s string, err error){
 	max = (max*4) + 3
-	
+
 	length, err := player.ReadVarInt()
 	if err != nil {
 		return "", err
@@ -270,4 +271,9 @@ func (player *Player) LoginKick(s string) {
 	}
 	player.WritePacket(&disconnect)
 	player.conn.Close()
+}
+
+func JsonEscape(s string) string {
+	str := strings.Replace(s, `\`, `\\`, -1)
+	return strings.Replace(str, `"`, `\"`, -1)
 }

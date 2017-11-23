@@ -1,5 +1,7 @@
 package main
 
+import "sync"
+
 var (
 	players_count = 0
 	players map[int]*Player = make(map[int]*Player)
