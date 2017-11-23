@@ -151,7 +151,7 @@ func InitHacks() {
   // Hack 1.12.1
 	clientbound[V1_12_1] = copyHack(clientbound[V1_12])
   for i := 0x2B; i <= 0x4E; i++ {
-    clientbound[V1_12_1][i] = lastClientbound(V1_12, i+1)
+    clientbound[V1_12_1][lastClientbound(V1_12, i)-1] = i
   }
 
   serverbound[V1_12_1] = copyHack(serverbound[V1_12])

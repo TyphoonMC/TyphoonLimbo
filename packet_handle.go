@@ -187,6 +187,9 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 	if &bossbar_create != nil {
 		player.WritePacket(&bossbar_create)
 	}
+	if &playerlist_hf != nil {
+		player.WritePacket(&playerlist_hf)
+	}
 	//player.Kick("Not implemented yet..")
 	return
 }
@@ -296,6 +299,71 @@ func (packet *PacketPlayMessage) Handle(player *Player) {
 }
 func (packet *PacketPlayMessage) Id() int {
 	return 0x0F
+}
+
+type PacketBossBar struct {
+	uuid uuid.UUID
+	action BossBarAction
+	title string
+	health float32
+	color BossBarColor
+	division BossBarDivision
+	flags uint8
+}
+func (packet *PacketBossBar) Read(player *Player) (err error) {
+	return
+}
+func (packet *PacketBossBar) Write(player *Player) (err error) {
+	err = player.WriteUUID(packet.uuid)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	err = player.WriteVarInt(int(packet.action))
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	if packet.action == BOSSBAR_UPDATE_TITLE || packet.action == BOSSBAR_ADD {
+		err = player.WriteString(packet.title)
+		if err != nil {
+			log.Print(err)
+			return
+		}
+	}
+	if packet.action == BOSSBAR_UPDATE_HEALTH || packet.action == BOSSBAR_ADD {
+		err = player.WriteFloat32(packet.health)
+		if err != nil {
+			log.Print(err)
+			return
+		}
+	}
+	if packet.action == BOSSBAR_UPDATE_STYLE || packet.action == BOSSBAR_ADD {
+		err = player.WriteVarInt(int(packet.color))
+		if err != nil {
+			log.Print(err)
+			return
+		}
+		err = player.WriteVarInt(int(packet.division))
+		if err != nil {
+			log.Print(err)
+			return
+		}
+	}
+	if packet.action == BOSSBAR_UPDATE_STYLE || packet.action == BOSSBAR_ADD {
+		err = player.WriteUInt8(packet.flags)
+		if err != nil {
+			log.Print(err)
+			return
+		}
+	}
+	return
+}
+func (packet *PacketBossBar) Handle(player *Player) {
+	return
+}
+func (packet *PacketBossBar) Id() int {
+	return 0x0C
 }
 
 type PacketPlayDisconnect struct {
@@ -514,67 +582,40 @@ func (packet *PacketPlayerPositionLook) Id() int {
 	return 0x2E
 }
 
-type PacketBossBar struct {
-	uuid uuid.UUID
-	action BossBarAction
-	title string
-	health float32
-	color BossBarColor
-	division BossBarDivision
-	flags uint8
+type PacketPlayerListHeaderFooter struct {
+	header *string
+	footer *string
 }
-func (packet *PacketBossBar) Read(player *Player) (err error) {
+func (packet *PacketPlayerListHeaderFooter) Read(player *Player) (err error) {
 	return
 }
-func (packet *PacketBossBar) Write(player *Player) (err error) {
-	err = player.WriteUUID(packet.uuid)
+func (packet *PacketPlayerListHeaderFooter) Write(player *Player) (err error) {
+	var str string
+	if packet.header == nil {
+		str = `{"translate":""}`
+	} else {
+		str = *packet.header
+	}
+	err = player.WriteString(str)
 	if err != nil {
 		log.Print(err)
 		return
 	}
-	err = player.WriteVarInt(int(packet.action))
+	if packet.footer == nil {
+		str = `{"translate":""}`
+	} else {
+		str = *packet.footer
+	}
+	err = player.WriteString(str)
 	if err != nil {
 		log.Print(err)
 		return
 	}
-	if packet.action == BOSSBAR_UPDATE_TITLE || packet.action == BOSSBAR_ADD {
-		err = player.WriteString(packet.title)
-		if err != nil {
-			log.Print(err)
-			return
-		}
-	}
-	if packet.action == BOSSBAR_UPDATE_HEALTH || packet.action == BOSSBAR_ADD {
-		err = player.WriteFloat32(packet.health)
-		if err != nil {
-			log.Print(err)
-			return
-		}
-	}
-	if packet.action == BOSSBAR_UPDATE_STYLE || packet.action == BOSSBAR_ADD {
-		err = player.WriteVarInt(int(packet.color))
-		if err != nil {
-			log.Print(err)
-			return
-		}
-		err = player.WriteVarInt(int(packet.division))
-		if err != nil {
-			log.Print(err)
-			return
-		}
-	}
-	if packet.action == BOSSBAR_UPDATE_STYLE || packet.action == BOSSBAR_ADD {
-		err = player.WriteUInt8(packet.flags)
-		if err != nil {
-			log.Print(err)
-			return
-		}
-	}
 	return
 }
-func (packet *PacketBossBar) Handle(player *Player) {
+func (packet *PacketPlayerListHeaderFooter) Handle(player *Player) {
 	return
 }
-func (packet *PacketBossBar) Id() int {
-	return 0x0C
+func (packet *PacketPlayerListHeaderFooter) Id() int {
+	return 0x47
 }
