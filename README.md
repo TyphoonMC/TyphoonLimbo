@@ -13,21 +13,21 @@ A limbo server is a fallback server able to handle a massive amount of simultane
 
 #### Minecraft protocol support
 
-Minecraft compatible versions:
-
-* 1.7.2 to 1.7.5 (4)
-* 1.7.6 to 1.7.10 (5)
-* 1.8 to 1.8.9 (47)
-* 1.9 (107)
-* 1.9.1 (108)
-* 1.9.2 (109)
-* 1.9.3, 1.9.4 (110)
-* 1.10, 1.10.1, 1.10.2 (210)
-* 1.11 (315)
-* 1.11.1, 1.11.2 (316)
-* 1.12 (335)
-* 1.12.1 (338)
-* 1.12.2 (340)
+| Minecraft Version | Protocol Version | Supported | Comment                                   |
+|-------------------|------------------|-----------|-------------------------------------------|
+| 1.7.2 to 1.7.5    | 4                | true      | No boss bar                               |
+| 1.7.6 to 1.7.10   | 5                | true      | No boss bar, No player list header/footer |
+| 1.8 to 1.8.9      | 47               | true      | No boss bar                               |
+| 1.9               | 107              | true      |                                           |
+| 1.9.1             | 108              | true      |                                           |
+| 1.9.2             | 109              | true      |                                           |
+| 1.9.3 to 1.9.4    | 110              | true      |                                           |
+| 1.10 to 1.10.2    | 210              | true      |                                           |
+| 1.11              | 315              | true      |                                           |
+| 1.11.1 to 1.11.2  | 316              | true      |                                           |
+| 1.12              | 335              | true      |                                           |
+| 1.12.1            | 338              | true      |                                           |
+| 1.12.2            | 340              | true      |                                           |
 
 #### How to build and start
 ```shell
