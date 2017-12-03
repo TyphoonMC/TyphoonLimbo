@@ -1,5 +1,5 @@
 # TyphoonLimbo
-### Lightweight minecraft limbo server
+## Lightweight minecraft limbo server
 
 ![1.7.X](https://img.shields.io/badge/1.7.X-ready-brightgreen.svg "1.7.X")
 ![1.8.X](https://img.shields.io/badge/1.8.X-ready-brightgreen.svg "1.8.X")
@@ -8,10 +8,10 @@
 ![1.11.X](https://img.shields.io/badge/1.11.X-ready-brightgreen.svg "1.11.X")
 ![1.12.X](https://img.shields.io/badge/1.12.X-ready-brightgreen.svg "1.12.X")
 ----
-#### What is a limbo server ?
+### What is a limbo server ?
 A limbo server is a fallback server able to handle a massive amount of simultaneous connections. The player spawns into the void then waits here. It can be used to keep players connected to a network after a lobby crashed or as an afk server.
 
-#### Minecraft protocol support
+### Minecraft protocol support
 
 | Minecraft Version | Protocol Version | Supported | Comment                                   |
 |-------------------|------------------|-----------|-------------------------------------------|
@@ -29,12 +29,21 @@ A limbo server is a fallback server able to handle a massive amount of simultane
 | 1.12.1            | 338              | true      |                                           |
 | 1.12.2            | 340              | true      |                                           |
 
-#### How to build and start
+### How to build and start
 ```shell
 go get github.com/satori/go.uuid
 go build
 ./TyphoonLimbo
 ```
 
-#### Security concerns
+### Security concerns
 TyphoonLimbo may be used behind a Bungeecord proxy.
+
+### Performance
+#### Memory cost
+Initial memory usage is about 580Ko. You should consider an additonal 200Ko per player connection (Used by socket buffers and packet wrappers)
+
+#### CPU cost
+Feel free to send me your metrics while using it.
+
+My actual CPU cost is about 0% while keeping 10 clients. An older version of TyphoonLimbo was used on my network and handled about 800 connections correctly after a massive crash.
