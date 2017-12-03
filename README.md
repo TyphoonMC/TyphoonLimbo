@@ -15,7 +15,7 @@ A limbo server is a fallback server able to handle a massive amount of simultane
 
 | Minecraft Version | Protocol Version | Supported | Comment                                   |
 |-------------------|------------------|-----------|-------------------------------------------|
-| 1.7.2 to 1.7.5    | 4                | true      | No boss bar                               |
+| 1.7.2 to 1.7.5    | 4                | true      | No boss bar, No player list header/footer |
 | 1.7.6 to 1.7.10   | 5                | true      | No boss bar, No player list header/footer |
 | 1.8 to 1.8.9      | 47               | true      | No boss bar                               |
 | 1.9               | 107              | true      |                                           |
