@@ -41,7 +41,7 @@ TyphoonLimbo may be used behind a Bungeecord proxy.
 
 ### Performance
 #### Memory cost
-Initial memory usage is about 580Ko. You should consider an additonal 200Ko per player connection (Used by socket buffers and packet wrappers)
+Initial memory usage is about 580KB. You should consider an additonal 200KB per player connection (Used by socket buffers and packet wrappers)
 
 #### CPU cost
 Feel free to send me your metrics while using it.
