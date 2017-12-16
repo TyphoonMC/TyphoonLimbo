@@ -6,5 +6,7 @@
   "logs": true,
   "join_message": "eyJ0ZXh0IjoiWW91IGFyZSBpbnRvIHRoZSBsaW1ibyIsImNvbG9yIjoiZGFya19yZWQifQ==",
   "boss_bar": "eyJ0ZXh0IjoiWW91IGFyZSBpbnRvIHRoZSBsaW1ibyIsImNvbG9yIjoiZGFya19yZWQifQ==",
-  "playerlist_header": "eyJ0ZXh0IjoiSGVyb2JyaW5lIGxpdmVzIGhlcmUiLCJjb2xvciI6InllbGxvdyIsImJvbGQiOnRydWV9"
+  "playerlist_header": "eyJ0ZXh0IjoiSGVyb2JyaW5lIGxpdmVzIGhlcmUiLCJjb2xvciI6InllbGxvdyIsImJvbGQiOnRydWV9",
+  "enable_compression": true,
+  "compression_threshold": 256
 }

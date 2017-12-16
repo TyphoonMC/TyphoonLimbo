@@ -12,6 +12,8 @@ var (
 	join_message PacketPlayMessage
 	bossbar_create PacketBossBar
 	playerlist_hf PacketPlayerListHeaderFooter
+	compressionEnabled = false
+	compressionThreshold = 256
 )
 
 func InitConfig() (err error) {
@@ -65,6 +67,13 @@ func InitConfig() (err error) {
 		}
 		msg := string(dat)
 		playerlist_hf.footer = &msg
+	}
+
+	if config["enable_compression"] != nil {
+		compressionEnabled = config["enable_compression"].(bool)
+	}
+	if config["compression_threshold"] != nil {
+		compressionThreshold = int(config["compression_threshold"].(float64))
 	}
 	return
 }

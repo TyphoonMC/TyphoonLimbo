@@ -3,6 +3,9 @@ package main
 import (
 	"net"
 	"log"
+	"compress/zlib"
+	"bytes"
+	"encoding/binary"
 )
 
 type State int8
@@ -155,6 +158,14 @@ type Player struct {
 }
 
 func (player *Player) ReadPacket() (packet Packet, err error){
+	if !player.compression {
+		return player.ReadPacketWithoutCompression()
+	} else {
+		return player.ReadPacketWithCompression()
+	}
+}
+
+func (player *Player) ReadPacketWithoutCompression() (packet Packet, err error) {
 	length, err := player.ReadVarInt()
 	if err != nil {
 		return
@@ -180,7 +191,91 @@ func (player *Player) ReadPacket() (packet Packet, err error){
 	return
 }
 
+func (player *Player) ReadPacketWithCompression() (packet Packet, err error) {
+	packetLength, err := player.ReadVarInt()
+	if err != nil {
+		return
+	}
+
+	dataLength, err := player.ReadVarInt()
+	if err != nil {
+		return
+	}
+	dataLengthLength := binary.PutUvarint(player.io.buffer[:], uint64(dataLength))
+
+	var id int
+	var length int
+
+	if dataLength == 0 {
+		id, err = player.ReadVarInt()
+		if err != nil {
+			return
+		}
+		idLength := binary.PutUvarint(player.io.buffer[:], uint64(id))
+		length = packetLength-dataLengthLength-idLength
+
+		if player.state == PLAY {
+			id = player.HackServerbound(id)
+		}
+		packet, err = player.HandlePacket(id, length)
+
+		if err != nil {
+			return
+		} else if packet != nil {
+			if config["logs"].(bool) {
+				log.Println("u->", id, packet)
+			}
+			packet.Handle(player)
+		}
+	} else {
+		var compressed []byte = make([]byte, packetLength-dataLengthLength)
+			player.conn.Read(compressed[:])
+
+		r, err := zlib.NewReader(bytes.NewReader(compressed[:]))
+		if err != nil {
+			return nil, err
+		}
+
+		var uncompressed []byte = make([]byte, packetLength-dataLengthLength)
+		r.Read(uncompressed[:])
+		r.Close()
+
+		tmp := player.io
+		rdr := bytes.NewBuffer(uncompressed[:])
+		player.io.rdr = rdr
+
+		id, err = player.ReadVarInt()
+		if err != nil {
+			return nil, err
+		}
+
+		if player.state == PLAY {
+			id = player.HackServerbound(id)
+		}
+		packet, err = player.HandlePacket(id, length)
+		player.io = tmp
+
+		if err != nil {
+			return nil, err
+		} else if packet != nil {
+			if config["logs"].(bool) {
+				log.Println("c->", id, packet)
+			}
+			packet.Handle(player)
+		}
+	}
+	return
+}
+
 func (player *Player) WritePacket(packet Packet) (err error){
+	if !player.compression {
+		return player.WritePacketWithoutCompression(packet)
+	} else {
+		return player.WritePacketWithCompression(packet)
+	}
+}
+
+func (player *Player) WritePacketWithoutCompression(packet Packet) (err error){
 	buff := newVarBuffer(256)
 	tmp := player.io
 	player.io = &ConnReadWrite{
@@ -207,6 +302,61 @@ func (player *Player) WritePacket(packet Packet) (err error){
 
 	if config["logs"].(bool) {
 		log.Println("<-", id, packet)
+	}
+	return nil
+}
+
+func (player *Player) WritePacketWithCompression(packet Packet) (err error){
+	buff := newVarBuffer(256)
+	tmp := player.io
+	player.io = &ConnReadWrite{
+		rdr: tmp.rdr,
+		wtr: buff,
+	}
+
+	id := packet.Id()
+	if player.state == PLAY {
+		id = player.HackClientbound(id)
+	}
+	if id == -1 {
+		return
+	}
+	player.WriteVarInt(id)
+	packet.Write(player)
+
+	var rBuff []byte;
+	var dataLength = 0
+	if buff.Len() < compressionThreshold {
+		rBuff = buff.Bytes()
+	} else {
+		var b bytes.Buffer
+		w := zlib.NewWriter(&b)
+		w.Write(buff.Bytes())
+		w.Close()
+		rBuff = b.Bytes()
+		dataLength = len(rBuff)
+	}
+
+	buff2 := newVarBuffer(1)
+	player.io.wtr = buff2
+	player.WriteVarInt(dataLength)
+	packetLength := len(rBuff)+buff2.Len()
+
+	buff3 := newVarBuffer(1)
+	player.io.wtr = buff3
+	player.WriteVarInt(packetLength)
+
+	player.io = tmp
+	player.conn.Write(buff3.Bytes())
+	player.conn.Write(buff2.Bytes())
+	player.conn.Write(rBuff)
+
+	if config["logs"].(bool) {
+		if buff.Len() < compressionThreshold {
+			log.Println("<-u", id, packet)
+		} else {
+			log.Println("<-c", id, packet)
+		}
 	}
 	return nil
 }

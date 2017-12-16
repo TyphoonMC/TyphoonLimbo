@@ -170,9 +170,11 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 
 	player.name = packet.username
 
-	setCompression := PacketSetCompression{256}
-	player.WritePacket(&setCompression)
-	player.compression = true
+	if compressionEnabled {
+		setCompression := PacketSetCompression{compressionThreshold}
+		player.WritePacket(&setCompression)
+		player.compression = true
+	}
 
 	success := PacketLoginSuccess{
 		uuid: player.uuid,
@@ -194,7 +196,6 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 	if &playerlist_hf != nil {
 		player.WritePacket(&playerlist_hf)
 	}
-	//player.Kick("Not implemented yet..")
 	return
 }
 func (packet *PacketLoginStart) Id() int {
