@@ -170,7 +170,7 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 
 	player.name = packet.username
 
-	if compressionEnabled {
+	if compressionEnabled && player.protocol >= V1_8 {
 		setCompression := PacketSetCompression{compressionThreshold}
 		player.WritePacket(&setCompression)
 		player.compression = true
