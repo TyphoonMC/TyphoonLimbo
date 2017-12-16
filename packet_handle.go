@@ -170,6 +170,10 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 
 	player.name = packet.username
 
+	setCompression := PacketSetCompression{256}
+	player.WritePacket(&setCompression)
+	player.compression = true
+
 	success := PacketLoginSuccess{
 		uuid: player.uuid,
 		username: player.name,
@@ -243,6 +247,27 @@ func (packet *PacketLoginSuccess) Handle(player *Player) {
 }
 func (packet *PacketLoginSuccess) Id() int {
 	return 0x02
+}
+
+type PacketSetCompression struct {
+	threshold int
+}
+func (packet *PacketSetCompression) Read(player *Player) (err error) {
+	return
+}
+func (packet *PacketSetCompression) Write(player *Player) (err error) {
+	err = player.WriteVarInt(packet.threshold)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+	return
+}
+func (packet *PacketSetCompression) Handle(player *Player) {
+	return
+}
+func (packet *PacketSetCompression) Id() int {
+	return 0x03
 }
 
 type PacketPlayChat struct {

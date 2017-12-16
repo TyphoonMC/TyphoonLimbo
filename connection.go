@@ -151,6 +151,7 @@ type Player struct {
 	name string
 	uuid string
 	keepalive int
+	compression bool
 }
 
 func (player *Player) ReadPacket() (packet Packet, err error){
