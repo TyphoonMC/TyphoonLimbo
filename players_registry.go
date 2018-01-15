@@ -3,14 +3,14 @@ package main
 import "sync"
 
 var (
-	players_count = 0
-	players map[int]*Player = make(map[int]*Player)
-	playersMutex = &sync.Mutex{}
+	players_count                 = 0
+	players       map[int]*Player = make(map[int]*Player)
+	playersMutex                  = &sync.Mutex{}
 )
 
 func (player *Player) register() {
 	playersMutex.Lock()
-	players[player.id]=player
+	players[player.id] = player
 	players_count++
 	playersMutex.Unlock()
 }

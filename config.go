@@ -2,16 +2,27 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"encoding/base64"
 	"github.com/satori/go.uuid"
+	"io/ioutil"
 )
 
+type Config struct {
+	ListenAddress    string          `json:"listen_address"`
+	MaxPlayers       int             `json:"max_players"`
+	Motd             string          `json:"motd"`
+	Restricted       bool            `json:"restricted"`
+	Logs             bool            `json:"logs"`
+	JoinMessage      json.RawMessage `json:"join_message"`
+	BossBar          json.RawMessage `json:"boss_bar"`
+	PlayerListHeader json.RawMessage `json:"playerlist_header"`
+	PlayerListFooter json.RawMessage `json:"playerlist_footer"`
+}
+
 var (
-	config map[string]interface{}
-	join_message PacketPlayMessage
+	config         Config
+	join_message   PacketPlayMessage
 	bossbar_create PacketBossBar
-	playerlist_hf PacketPlayerListHeaderFooter
+	playerlist_hf  PacketPlayerListHeaderFooter
 )
 
 func InitConfig() (err error) {
@@ -23,47 +34,32 @@ func InitConfig() (err error) {
 		panic(err)
 	}
 
-	if config["join_message"] != nil {
-		message, err := base64.StdEncoding.DecodeString(config["join_message"].(string))
-		if err != nil {
-			panic(err)
-		}
+	if config.JoinMessage != nil {
 		join_message = PacketPlayMessage{
-			string(message),
+			string(config.JoinMessage),
 			CHAT_BOX,
 		}
 	}
-	if config["boss_bar"] != nil {
-		message, err := base64.StdEncoding.DecodeString(config["boss_bar"].(string))
-		if err != nil {
-			panic(err)
-		}
+
+	if config.BossBar != nil {
 		bossbar_create = PacketBossBar{
-			uuid: uuid.NewV4(),
-			action: BOSSBAR_ADD,
-			title: string(message),
-			health: 1.0,
-			color: BOSSBAR_COLOR_RED,
+			uuid:     uuid.NewV4(),
+			action:   BOSSBAR_ADD,
+			title:    string(config.BossBar),
+			health:   1.0,
+			color:    BOSSBAR_COLOR_RED,
 			division: BOSSBAR_NODIVISION,
-			flags: 0,
+			flags:    0,
 		}
 	}
 
 	playerlist_hf = PacketPlayerListHeaderFooter{}
-	if config["playerlist_header"] != nil {
-		dat, err := base64.StdEncoding.DecodeString(config["playerlist_header"].(string))
-		if err != nil {
-			panic(err)
-		}
-		msg := string(dat)
+	if config.PlayerListHeader != nil {
+		msg := string(config.PlayerListHeader)
 		playerlist_hf.header = &msg
 	}
-	if config["playerlist_footer"] != nil {
-		dat, err := base64.StdEncoding.DecodeString(config["playerlist_footer"].(string))
-		if err != nil {
-			panic(err)
-		}
-		msg := string(dat)
+	if config.PlayerListFooter != nil {
+		msg := string(config.PlayerListFooter)
 		playerlist_hf.footer = &msg
 	}
 	return
