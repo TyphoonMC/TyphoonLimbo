@@ -1,11 +1,11 @@
 package main
 
 import (
-	"log"
-	"net"
 	"bufio"
-	"time"
+	"log"
 	"math/rand"
+	"net"
+	"time"
 )
 
 var (
@@ -28,7 +28,7 @@ func main() {
 		if err != nil {
 			log.Print(err)
 		} else {
-			connCounter+=1
+			connCounter += 1
 			go HandleConnection(conn, connCounter)
 		}
 	}
@@ -59,10 +59,10 @@ func KeepAlive() {
 func HandleConnection(conn net.Conn, id int) {
 	log.Printf("%s connected.", conn.RemoteAddr().String())
 
-	player := &Player {
-		id: id,
-		conn: conn,
-		state: HANDSHAKING,
+	player := &Player{
+		id:       id,
+		conn:     conn,
+		state:    HANDSHAKING,
 		protocol: V1_10,
 		io: &ConnReadWrite{
 			rdr: bufio.NewReader(conn),
@@ -72,8 +72,8 @@ func HandleConnection(conn net.Conn, id int) {
 			"",
 			0,
 		},
-		name: "",
-		uuid: "d979912c-bb24-4f23-a6ac-c32985a1e5d3",
+		name:      "",
+		uuid:      "d979912c-bb24-4f23-a6ac-c32985a1e5d3",
 		keepalive: 0,
 	}
 

@@ -43,13 +43,13 @@ func InitConfig() (err error) {
 
 	if config.BossBar != nil {
 		bossbar_create = PacketBossBar{
-			uuid: uuid.NewV4(),
-			action: BOSSBAR_ADD,
-			title: string(config.BossBar),
-			health: 1.0,
-			color: BOSSBAR_COLOR_RED,
+			uuid:     uuid.NewV4(),
+			action:   BOSSBAR_ADD,
+			title:    string(config.BossBar),
+			health:   1.0,
+			color:    BOSSBAR_COLOR_RED,
 			division: BOSSBAR_NODIVISION,
-			flags: 0,
+			flags:    0,
 		}
 	}
 

@@ -1,17 +1,17 @@
 package main
 
 import (
-	"io"
 	"encoding/binary"
-	"strings"
 	"fmt"
-	"math"
 	"github.com/satori/go.uuid"
+	"io"
+	"math"
+	"strings"
 )
 
 type ConnReadWrite struct {
-	rdr io.Reader
-	wtr io.Writer
+	rdr    io.Reader
+	wtr    io.Writer
 	buffer [16]byte
 }
 
@@ -23,7 +23,7 @@ func (rdrwtr ConnReadWrite) ReadByte() (b byte, err error) {
 	return buff[0], nil
 }
 
-func (player *Player) ReadByte() (b byte, err error){
+func (player *Player) ReadByte() (b byte, err error) {
 	buff := player.io.buffer[:1]
 	if _, err := io.ReadFull(player.conn, buff); err != nil {
 		return 0, err
@@ -31,7 +31,7 @@ func (player *Player) ReadByte() (b byte, err error){
 	return buff[0], nil
 }
 
-func (player *Player) ReadVarInt() (i int, err error){
+func (player *Player) ReadVarInt() (i int, err error) {
 	v, err := binary.ReadUvarint(player.io)
 	if err != nil {
 		return 0, err
@@ -39,7 +39,7 @@ func (player *Player) ReadVarInt() (i int, err error){
 	return int(v), nil
 }
 
-func (player *Player) WriteVarInt(i int) (err error){
+func (player *Player) WriteVarInt(i int) (err error) {
 	buff := player.io.buffer[:]
 	length := binary.PutUvarint(buff, uint64(i))
 	_, err = player.io.wtr.Write(buff[:length])
@@ -49,7 +49,7 @@ func (player *Player) WriteVarInt(i int) (err error){
 	return nil
 }
 
-func (player *Player) ReadBool() (b bool, err error){
+func (player *Player) ReadBool() (b bool, err error) {
 	buff := player.io.buffer[:1]
 	_, err = io.ReadFull(player.io.rdr, buff)
 	if err != nil {
@@ -58,7 +58,7 @@ func (player *Player) ReadBool() (b bool, err error){
 	return buff[0] == 0x01, nil
 }
 
-func (player *Player) WriteBool(b bool) (err error){
+func (player *Player) WriteBool(b bool) (err error) {
 	buff := player.io.buffer[:1]
 	if b {
 		buff[0] = 0x01
@@ -72,7 +72,7 @@ func (player *Player) WriteBool(b bool) (err error){
 	return
 }
 
-func (player *Player) ReadUInt8() (i uint8, err error){
+func (player *Player) ReadUInt8() (i uint8, err error) {
 	buff := player.io.buffer[:1]
 	_, err = io.ReadFull(player.io.rdr, buff)
 	if err != nil {
@@ -81,7 +81,7 @@ func (player *Player) ReadUInt8() (i uint8, err error){
 	return buff[0], nil
 }
 
-func (player *Player) WriteUInt8(i uint8) (err error){
+func (player *Player) WriteUInt8(i uint8) (err error) {
 	buff := player.io.buffer[:1]
 	buff[0] = i
 	_, err = player.io.wtr.Write(buff)
@@ -91,7 +91,7 @@ func (player *Player) WriteUInt8(i uint8) (err error){
 	return
 }
 
-func (player *Player) ReadUInt16() (i uint16, err error){
+func (player *Player) ReadUInt16() (i uint16, err error) {
 	buff := player.io.buffer[:2]
 	_, err = io.ReadFull(player.io.rdr, buff)
 	if err != nil {
@@ -100,7 +100,7 @@ func (player *Player) ReadUInt16() (i uint16, err error){
 	return binary.BigEndian.Uint16(buff), nil
 }
 
-func (player *Player) WriteUInt16(i uint16) (err error){
+func (player *Player) WriteUInt16(i uint16) (err error) {
 	buff := player.io.buffer[:2]
 	binary.BigEndian.PutUint16(buff, i)
 	_, err = player.io.wtr.Write(buff)
@@ -110,7 +110,7 @@ func (player *Player) WriteUInt16(i uint16) (err error){
 	return
 }
 
-func (player *Player) ReadUInt32() (i uint32, err error){
+func (player *Player) ReadUInt32() (i uint32, err error) {
 	buff := player.io.buffer[:4]
 	_, err = io.ReadFull(player.io.rdr, buff)
 	if err != nil {
@@ -119,7 +119,7 @@ func (player *Player) ReadUInt32() (i uint32, err error){
 	return binary.BigEndian.Uint32(buff), nil
 }
 
-func (player *Player) WriteUInt32(i uint32) (err error){
+func (player *Player) WriteUInt32(i uint32) (err error) {
 	buff := player.io.buffer[:4]
 	binary.BigEndian.PutUint32(buff, i)
 	_, err = player.io.wtr.Write(buff)
@@ -129,7 +129,7 @@ func (player *Player) WriteUInt32(i uint32) (err error){
 	return
 }
 
-func (player *Player) ReadUInt64() (i uint64, err error){
+func (player *Player) ReadUInt64() (i uint64, err error) {
 	buff := player.io.buffer[:8]
 	_, err = io.ReadFull(player.io.rdr, buff)
 	if err != nil {
@@ -138,7 +138,7 @@ func (player *Player) ReadUInt64() (i uint64, err error){
 	return binary.BigEndian.Uint64(buff), nil
 }
 
-func (player *Player) WriteUInt64(i uint64) (err error){
+func (player *Player) WriteUInt64(i uint64) (err error) {
 	buff := player.io.buffer[:8]
 	binary.BigEndian.PutUint64(buff, i)
 	_, err = player.io.wtr.Write(buff)
@@ -148,7 +148,7 @@ func (player *Player) WriteUInt64(i uint64) (err error){
 	return
 }
 
-func (player *Player) ReadFloat32() (i float32, err error){
+func (player *Player) ReadFloat32() (i float32, err error) {
 	buff := player.io.buffer[:4]
 	_, err = io.ReadFull(player.io.rdr, buff)
 	if err != nil {
@@ -157,7 +157,7 @@ func (player *Player) ReadFloat32() (i float32, err error){
 	return math.Float32frombits(binary.BigEndian.Uint32(buff)), nil
 }
 
-func (player *Player) WriteFloat32(i float32) (err error){
+func (player *Player) WriteFloat32(i float32) (err error) {
 	buff := player.io.buffer[:4]
 	binary.BigEndian.PutUint32(buff, math.Float32bits(i))
 	_, err = player.io.wtr.Write(buff)
@@ -167,7 +167,7 @@ func (player *Player) WriteFloat32(i float32) (err error){
 	return
 }
 
-func (player *Player) ReadFloat64() (i float64, err error){
+func (player *Player) ReadFloat64() (i float64, err error) {
 	buff := player.io.buffer[:8]
 	_, err = io.ReadFull(player.io.rdr, buff)
 	if err != nil {
@@ -176,7 +176,7 @@ func (player *Player) ReadFloat64() (i float64, err error){
 	return math.Float64frombits(binary.BigEndian.Uint64(buff)), nil
 }
 
-func (player *Player) WriteFloat64(i float64) (err error){
+func (player *Player) WriteFloat64(i float64) (err error) {
 	buff := player.io.buffer[:8]
 	binary.BigEndian.PutUint64(buff, math.Float64bits(i))
 	_, err = player.io.wtr.Write(buff)
@@ -186,12 +186,12 @@ func (player *Player) WriteFloat64(i float64) (err error){
 	return
 }
 
-func (player *Player) ReadString() (s string, err error){
+func (player *Player) ReadString() (s string, err error) {
 	length, err := player.ReadVarInt()
 	if err != nil {
 		return "", err
 	}
-	buffer := make([]byte,length)
+	buffer := make([]byte, length)
 	_, err = io.ReadFull(player.io.rdr, buffer)
 	if err != nil {
 		return "", err
@@ -199,8 +199,8 @@ func (player *Player) ReadString() (s string, err error){
 	return string(buffer), nil
 }
 
-func (player *Player) ReadStringLimited(max int) (s string, err error){
-	max = (max*4) + 3
+func (player *Player) ReadStringLimited(max int) (s string, err error) {
+	max = (max * 4) + 3
 
 	length, err := player.ReadVarInt()
 	if err != nil {
@@ -210,7 +210,7 @@ func (player *Player) ReadStringLimited(max int) (s string, err error){
 		player.Kick("Invalid packet")
 		return "", nil
 	}
-	buffer := make([]byte,length)
+	buffer := make([]byte, length)
 	_, err = io.ReadFull(player.io.rdr, buffer)
 	if err != nil {
 		return "", err
@@ -218,7 +218,7 @@ func (player *Player) ReadStringLimited(max int) (s string, err error){
 	return string(buffer), nil
 }
 
-func (player *Player) WriteString(s string) (err error){
+func (player *Player) WriteString(s string) (err error) {
 	buff := []byte(s)
 	err = player.WriteVarInt(len(buff))
 	if err != nil {
@@ -231,10 +231,10 @@ func (player *Player) WriteString(s string) (err error){
 	return nil
 }
 
-func (player *Player) WriteStringRestricted(s string, max int) (err error){
+func (player *Player) WriteStringRestricted(s string, max int) (err error) {
 	buff := []byte(s)
-	if(len(buff) > max) {
-		buff = buff[:max];
+	if len(buff) > max {
+		buff = buff[:max]
 	}
 	err = player.WriteVarInt(len(buff))
 	if err != nil {
@@ -247,7 +247,7 @@ func (player *Player) WriteStringRestricted(s string, max int) (err error){
 	return nil
 }
 
-func (player *Player) WriteUUID(uid uuid.UUID) (err error){
+func (player *Player) WriteUUID(uid uuid.UUID) (err error) {
 	_, err = player.io.wtr.Write(uid[:])
 	if err != nil {
 		return err
