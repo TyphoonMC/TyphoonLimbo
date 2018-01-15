@@ -171,7 +171,7 @@ func (player *Player) ReadPacket() (packet Packet, err error){
 	if err != nil {
 		return
 	} else if packet != nil {
-		if config["logs"].(bool) {
+		if config.Logs {
 			log.Println("->", id, packet)
 		}
 		packet.Handle(player)
@@ -204,7 +204,7 @@ func (player *Player) WritePacket(packet Packet) (err error){
 	player.conn.Write(ln.Bytes())
 	player.conn.Write(buff.Bytes())
 
-	if config["logs"].(bool) {
+	if config.Logs {
 		log.Println("<-", id, packet)
 	}
 	return nil

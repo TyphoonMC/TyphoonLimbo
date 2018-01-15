@@ -64,10 +64,10 @@ func (packet *PacketStatusRequest) Handle(player *Player) {
 		protocol = player.protocol
 	}
 
-	max_players := int(config["max_players"].(float64))
-	motd := config["motd"].(string)
+	max_players := config.MaxPlayers
+	motd := config.Motd
 
-	if max_players < players_count && !config["restricted"].(bool) {
+	if max_players < players_count && !config.Restricted {
 		max_players = players_count
 	}
 
@@ -162,9 +162,9 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 		return
 	}
 
-	max_players := int(config["max_players"].(float64))
+	max_players := config.MaxPlayers
 
-	if max_players <= players_count && config["restricted"].(bool) {
+	if max_players <= players_count && config.Restricted {
 		player.LoginKick("Server is full")
 	}
 

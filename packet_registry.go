@@ -33,7 +33,7 @@ func (player *Player) HandlePacket(id int, length int) (packet Packet, err error
 	typ := packets[PacketTypeHash(player.state, id)];
 
 	if typ == nil {
-		if config["logs"].(bool) {
+		if config.Logs {
 			log.Printf("Unknown packet #%d\n", id)
 		}
 

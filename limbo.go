@@ -6,7 +6,6 @@ import (
 	"bufio"
 	"time"
 	"math/rand"
-	"fmt"
 )
 
 var (
@@ -18,12 +17,11 @@ func main() {
 	InitPackets()
 	InitHacks()
 
-	port := int(config["port"].(float64))
-	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	ln, err := net.Listen("tcp", config.ListenAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Server launched on port", port)
+	log.Println("Server launched on port", config.ListenAddress)
 	go KeepAlive()
 	for {
 		conn, err := ln.Accept()
