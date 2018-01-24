@@ -72,19 +72,17 @@ func HandleConnection(conn net.Conn, id int) {
 			"",
 			0,
 		},
-		name:      "",
-		uuid:      "d979912c-bb24-4f23-a6ac-c32985a1e5d3",
-		keepalive: 0,
+		name:        "",
+		uuid:        "d979912c-bb24-4f23-a6ac-c32985a1e5d3",
+		keepalive:   0,
 		compression: false,
 	}
 
 	for {
-		packet, err := player.ReadPacket()
+		_, err := player.ReadPacket()
 		if err != nil {
 			break
 		}
-
-		CallEvent("packetReceived", packet)
 	}
 
 	player.unregister()

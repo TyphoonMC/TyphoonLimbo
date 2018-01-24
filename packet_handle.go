@@ -46,7 +46,6 @@ func (packet *PacketHandshake) Handle(player *Player) {
 	player.protocol = packet.protocol
 	player.inaddr.address = packet.address
 	player.inaddr.port = packet.port
-	return
 }
 func (packet *PacketHandshake) Id() int {
 	return 0x00
@@ -77,7 +76,6 @@ func (packet *PacketStatusRequest) Handle(player *Player) {
 		response: fmt.Sprintf(`{"version":{"name":"Typhoon","protocol":%d},"players":{"max":%d,"online":%d,"sample":[]},"description":{"text":"%s"},"favicon":""}`, protocol, max_players, players_count, JsonEscape(motd)),
 	}
 	player.WritePacket(&response)
-	return
 }
 func (packet *PacketStatusRequest) Id() int {
 	return 0x00
@@ -98,9 +96,7 @@ func (packet *PacketStatusResponse) Write(player *Player) (err error) {
 	}
 	return
 }
-func (packet *PacketStatusResponse) Handle(player *Player) {
-	return
-}
+func (packet *PacketStatusResponse) Handle(player *Player) {}
 func (packet *PacketStatusResponse) Id() int {
 	return 0x00
 }
@@ -127,7 +123,6 @@ func (packet *PacketStatusPing) Write(player *Player) (err error) {
 }
 func (packet *PacketStatusPing) Handle(player *Player) {
 	player.WritePacket(packet)
-	return
 }
 func (packet *PacketStatusPing) Id() int {
 	return 0x01
@@ -202,7 +197,6 @@ func (packet *PacketLoginStart) Handle(player *Player) {
 	if &playerlist_hf != nil {
 		player.WritePacket(&playerlist_hf)
 	}
-	return
 }
 func (packet *PacketLoginStart) Id() int {
 	return 0x00
@@ -223,9 +217,7 @@ func (packet *PacketLoginDisconnect) Write(player *Player) (err error) {
 	}
 	return
 }
-func (packet *PacketLoginDisconnect) Handle(player *Player) {
-	return
-}
+func (packet *PacketLoginDisconnect) Handle(player *Player) {}
 func (packet *PacketLoginDisconnect) Id() int {
 	return 0x00
 }
@@ -251,9 +243,7 @@ func (packet *PacketLoginSuccess) Write(player *Player) (err error) {
 	}
 	return
 }
-func (packet *PacketLoginSuccess) Handle(player *Player) {
-	return
-}
+func (packet *PacketLoginSuccess) Handle(player *Player) {}
 func (packet *PacketLoginSuccess) Id() int {
 	return 0x02
 }
@@ -261,6 +251,7 @@ func (packet *PacketLoginSuccess) Id() int {
 type PacketSetCompression struct {
 	threshold int
 }
+
 func (packet *PacketSetCompression) Read(player *Player) (err error) {
 	return
 }
@@ -272,9 +263,7 @@ func (packet *PacketSetCompression) Write(player *Player) (err error) {
 	}
 	return
 }
-func (packet *PacketSetCompression) Handle(player *Player) {
-	return
-}
+func (packet *PacketSetCompression) Handle(player *Player) {}
 func (packet *PacketSetCompression) Id() int {
 	return 0x03
 }
@@ -301,7 +290,6 @@ func (packet *PacketPlayChat) Handle(player *Player) {
 			position:  CHAT_BOX,
 		})
 	}
-	return
 }
 func (packet *PacketPlayChat) Id() int {
 	return 0x02
@@ -330,9 +318,7 @@ func (packet *PacketPlayMessage) Write(player *Player) (err error) {
 	}
 	return
 }
-func (packet *PacketPlayMessage) Handle(player *Player) {
-	return
-}
+func (packet *PacketPlayMessage) Handle(player *Player) {}
 func (packet *PacketPlayMessage) Id() int {
 	return 0x0F
 }
@@ -396,9 +382,7 @@ func (packet *PacketBossBar) Write(player *Player) (err error) {
 	}
 	return
 }
-func (packet *PacketBossBar) Handle(player *Player) {
-	return
-}
+func (packet *PacketBossBar) Handle(player *Player) {}
 func (packet *PacketBossBar) Id() int {
 	return 0x0C
 }
@@ -418,9 +402,7 @@ func (packet *PacketPlayDisconnect) Write(player *Player) (err error) {
 	}
 	return
 }
-func (packet *PacketPlayDisconnect) Handle(player *Player) {
-	return
-}
+func (packet *PacketPlayDisconnect) Handle(player *Player) {}
 func (packet *PacketPlayDisconnect) Id() int {
 	return 0x1A
 }
@@ -470,34 +452,9 @@ func (packet *PacketPlayKeepAlive) Handle(player *Player) {
 		player.keepalive = packet.id
 	}
 	player.keepalive = 0
-	return
 }
 func (packet *PacketPlayKeepAlive) Id() int {
 	return 0x1F
-}
-
-type PacketPlayChunkData struct {
-	x                     uint32
-	y                     uint32
-	ground_up_continuous  bool
-	primary_bit_mask      int
-	data_size             int
-	data                  []ChunkSection
-	biomes                [256]byte
-	block_entities_length int
-}
-
-func (packet *PacketPlayChunkData) Read(player *Player) (err error) {
-	return
-}
-func (packet *PacketPlayChunkData) Write(player *Player) (err error) {
-	return
-}
-func (packet *PacketPlayChunkData) Handle(player *Player) {
-	return
-}
-func (packet *PacketPlayChunkData) Id() int {
-	return 0x20
 }
 
 type PacketPlayJoinGame struct {
@@ -557,9 +514,7 @@ func (packet *PacketPlayJoinGame) Write(player *Player) (err error) {
 	}
 	return
 }
-func (packet *PacketPlayJoinGame) Handle(player *Player) {
-	return
-}
+func (packet *PacketPlayJoinGame) Handle(player *Player) {}
 func (packet *PacketPlayJoinGame) Id() int {
 	return 0x23
 }
@@ -617,9 +572,7 @@ func (packet *PacketPlayerPositionLook) Write(player *Player) (err error) {
 	}
 	return
 }
-func (packet *PacketPlayerPositionLook) Handle(player *Player) {
-	return
-}
+func (packet *PacketPlayerPositionLook) Handle(player *Player) {}
 func (packet *PacketPlayerPositionLook) Id() int {
 	return 0x2E
 }
@@ -656,9 +609,7 @@ func (packet *PacketPlayerListHeaderFooter) Write(player *Player) (err error) {
 	}
 	return
 }
-func (packet *PacketPlayerListHeaderFooter) Handle(player *Player) {
-	return
-}
+func (packet *PacketPlayerListHeaderFooter) Handle(player *Player) {}
 func (packet *PacketPlayerListHeaderFooter) Id() int {
 	return 0x47
 }

@@ -1,10 +1,10 @@
 package main
 
 import (
-	"log"
-	"compress/zlib"
 	"bytes"
+	"compress/zlib"
 	"encoding/binary"
+	"log"
 	"net"
 )
 
@@ -102,32 +102,22 @@ const (
 	DEFAULT_1_1  LevelType = "default_1_1"
 )
 
-type ChunkSection struct {
-	bits_per_block    uint8
-	palette_length    int
-	palette           []int
-	data_array_length int
-	data_array        []uint64
-	block_light       []uint8
-	sky_light         []uint8
-}
-
 type Protocol uint16
 
 const (
 	V1_7_2  Protocol = 4
-	V1_7_6           = 5
-	V1_8             = 47
-	V1_9             = 107
-	V1_9_1           = 108
-	V1_9_2           = 109
-	V1_9_3           = 110
-	V1_10            = 210
-	V1_11            = 315
-	V1_11_1          = 316
-	V1_12            = 335
-	V1_12_1          = 338
-	V1_12_2          = 340
+	V1_7_6  Protocol = 5
+	V1_8    Protocol = 47
+	V1_9    Protocol = 107
+	V1_9_1  Protocol = 108
+	V1_9_2  Protocol = 109
+	V1_9_3  Protocol = 110
+	V1_10   Protocol = 210
+	V1_11   Protocol = 315
+	V1_11_1 Protocol = 316
+	V1_12   Protocol = 335
+	V1_12_1 Protocol = 338
+	V1_12_2 Protocol = 340
 )
 
 var (
@@ -157,19 +147,19 @@ type InAddr struct {
 }
 
 type Player struct {
-	id        int
-	conn      net.Conn
-	io        *ConnReadWrite
-	state     State
-	protocol  Protocol
-	inaddr    InAddr
-	name      string
-	uuid      string
-	keepalive int
+	id          int
+	conn        net.Conn
+	io          *ConnReadWrite
+	state       State
+	protocol    Protocol
+	inaddr      InAddr
+	name        string
+	uuid        string
+	keepalive   int
 	compression bool
 }
 
-func (player *Player) ReadPacket() (packet Packet, err error){
+func (player *Player) ReadPacket() (packet Packet, err error) {
 	if !player.compression {
 		return player.ReadPacketWithoutCompression()
 	} else {
@@ -224,7 +214,7 @@ func (player *Player) ReadPacketWithCompression() (packet Packet, err error) {
 			return
 		}
 		idLength := binary.PutUvarint(player.io.buffer[:], uint64(id))
-		length = packetLength-dataLengthLength-idLength
+		length = packetLength - dataLengthLength - idLength
 
 		if player.state == PLAY {
 			id = player.HackServerbound(id)
@@ -241,7 +231,7 @@ func (player *Player) ReadPacketWithCompression() (packet Packet, err error) {
 		}
 	} else {
 		var compressed []byte = make([]byte, packetLength-dataLengthLength)
-			player.conn.Read(compressed[:])
+		player.conn.Read(compressed[:])
 
 		r, err := zlib.NewReader(bytes.NewReader(compressed[:]))
 		if err != nil {
@@ -279,7 +269,7 @@ func (player *Player) ReadPacketWithCompression() (packet Packet, err error) {
 	return
 }
 
-func (player *Player) WritePacket(packet Packet) (err error){
+func (player *Player) WritePacket(packet Packet) (err error) {
 	if !player.compression {
 		return player.WritePacketWithoutCompression(packet)
 	} else {
@@ -287,7 +277,7 @@ func (player *Player) WritePacket(packet Packet) (err error){
 	}
 }
 
-func (player *Player) WritePacketWithoutCompression(packet Packet) (err error){
+func (player *Player) WritePacketWithoutCompression(packet Packet) (err error) {
 	buff := newVarBuffer(256)
 	tmp := player.io
 	player.io = &ConnReadWrite{
@@ -318,7 +308,7 @@ func (player *Player) WritePacketWithoutCompression(packet Packet) (err error){
 	return nil
 }
 
-func (player *Player) WritePacketWithCompression(packet Packet) (err error){
+func (player *Player) WritePacketWithCompression(packet Packet) (err error) {
 	buff := newVarBuffer(256)
 	tmp := player.io
 	player.io = &ConnReadWrite{
@@ -336,7 +326,7 @@ func (player *Player) WritePacketWithCompression(packet Packet) (err error){
 	player.WriteVarInt(id)
 	packet.Write(player)
 
-	var rBuff []byte;
+	var rBuff []byte
 	var dataLength = 0
 	if buff.Len() < config.Threshold {
 		rBuff = buff.Bytes()
@@ -352,7 +342,7 @@ func (player *Player) WritePacketWithCompression(packet Packet) (err error){
 	buff2 := newVarBuffer(1)
 	player.io.wtr = buff2
 	player.WriteVarInt(dataLength)
-	packetLength := len(rBuff)+buff2.Len()
+	packetLength := len(rBuff) + buff2.Len()
 
 	buff3 := newVarBuffer(1)
 	player.io.wtr = buff3

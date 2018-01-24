@@ -3,7 +3,6 @@ package main
 var (
 	clientbound = make(map[Protocol]map[int]int)
 	serverbound = make(map[Protocol]map[int]int)
-	HACKS       = [...]Protocol{V1_8, V1_12, V1_12_1, V1_12_2}
 )
 
 func InitHacks() {

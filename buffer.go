@@ -14,7 +14,6 @@ func newVarBuffer(size int) *VarBuffer {
 
 func array_cpy(dst []byte, dstindex int, src []byte, srcindex int, length int) {
 	copy(dst[dstindex:dstindex+length], src[srcindex:srcindex+length])
-	return
 }
 
 func (buff *VarBuffer) Len() int {

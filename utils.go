@@ -43,10 +43,7 @@ func (player *Player) WriteVarInt(i int) (err error) {
 	buff := player.io.buffer[:]
 	length := binary.PutUvarint(buff, uint64(i))
 	_, err = player.io.wtr.Write(buff[:length])
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (player *Player) ReadBool() (b bool, err error) {
@@ -225,10 +222,7 @@ func (player *Player) WriteString(s string) (err error) {
 		return err
 	}
 	_, err = player.io.wtr.Write(buff)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (player *Player) WriteStringRestricted(s string, max int) (err error) {
@@ -241,18 +235,12 @@ func (player *Player) WriteStringRestricted(s string, max int) (err error) {
 		return err
 	}
 	_, err = player.io.wtr.Write(buff)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (player *Player) WriteUUID(uid uuid.UUID) (err error) {
 	_, err = player.io.wtr.Write(uid[:])
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (player *Player) Kick(s string) {
