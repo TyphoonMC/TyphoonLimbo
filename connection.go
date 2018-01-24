@@ -1,14 +1,15 @@
 package main
 
 import (
-	"net"
 	"log"
 	"compress/zlib"
 	"bytes"
 	"encoding/binary"
+	"net"
 )
 
 type State int8
+
 const (
 	HANDSHAKING State = iota
 	STATUS
@@ -17,6 +18,7 @@ const (
 )
 
 type Gamemode uint8
+
 const (
 	SURVIVAL Gamemode = iota
 	CREATIVE
@@ -25,13 +27,15 @@ const (
 )
 
 type Dimension uint32
+
 const (
-	NETHER Dimension = 0xFF
+	NETHER    Dimension = 0xFF
 	OVERWORLD Dimension = 0
-	END Dimension = 1
+	END       Dimension = 1
 )
 
 type Difficulty uint8
+
 const (
 	PEACEFUL Difficulty = iota
 	EASY
@@ -40,6 +44,7 @@ const (
 )
 
 type ChatPosition uint8
+
 const (
 	CHAT_BOX ChatPosition = iota
 	SYSTEM
@@ -47,6 +52,7 @@ const (
 )
 
 type ScoreboardPosition uint8
+
 const (
 	LIST ScoreboardPosition = iota
 	SIDEBAR
@@ -54,6 +60,7 @@ const (
 )
 
 type BossBarAction int
+
 const (
 	BOSSBAR_ADD BossBarAction = iota
 	BOSSBAR_REMOVE
@@ -64,6 +71,7 @@ const (
 )
 
 type BossBarColor int
+
 const (
 	BOSSBAR_COLOR_PINK BossBarColor = iota
 	BOSSBAR_COLOR_BLUE
@@ -75,6 +83,7 @@ const (
 )
 
 type BossBarDivision int
+
 const (
 	BOSSBAR_NODIVISION BossBarDivision = iota
 	BOSSBAR_6NOTCHES
@@ -84,40 +93,43 @@ const (
 )
 
 type LevelType string
+
 const (
-	DEFAULT LevelType = "default"
-	FLAT LevelType = "flat"
+	DEFAULT      LevelType = "default"
+	FLAT         LevelType = "flat"
 	LARGE_BIOMES LevelType = "largeBiomes"
-	AMPLIFIED LevelType = "amplified"
-	DEFAULT_1_1 LevelType = "default_1_1"
+	AMPLIFIED    LevelType = "amplified"
+	DEFAULT_1_1  LevelType = "default_1_1"
 )
 
 type ChunkSection struct {
-	bits_per_block uint8
-	palette_length int
-	palette []int
+	bits_per_block    uint8
+	palette_length    int
+	palette           []int
 	data_array_length int
-	data_array []uint64
-	block_light []uint8
-	sky_light []uint8
+	data_array        []uint64
+	block_light       []uint8
+	sky_light         []uint8
 }
 
 type Protocol uint16
+
 const (
-	V1_7_2 Protocol = 4
-	V1_7_6 = 5
-	V1_8 = 47
-	V1_9 = 107
-	V1_9_1 = 108
-	V1_9_2 = 109
-	V1_9_3 = 110
-	V1_10 = 210
-	V1_11 = 315
-	V1_11_1 = 316
-	V1_12 = 335
-	V1_12_1 = 338
-	V1_12_2 = 340
+	V1_7_2  Protocol = 4
+	V1_7_6           = 5
+	V1_8             = 47
+	V1_9             = 107
+	V1_9_1           = 108
+	V1_9_2           = 109
+	V1_9_3           = 110
+	V1_10            = 210
+	V1_11            = 315
+	V1_11_1          = 316
+	V1_12            = 335
+	V1_12_1          = 338
+	V1_12_2          = 340
 )
+
 var (
 	COMPATIBLE_PROTO = [...]Protocol{
 		V1_7_2, V1_7_6,
@@ -141,18 +153,18 @@ func IsCompatible(proto Protocol) bool {
 
 type InAddr struct {
 	address string
-	port uint16
+	port    uint16
 }
 
 type Player struct {
-	id int
-	conn net.Conn
-	io *ConnReadWrite
-	state State
-	protocol Protocol
-	inaddr InAddr
-	name string
-	uuid string
+	id        int
+	conn      net.Conn
+	io        *ConnReadWrite
+	state     State
+	protocol  Protocol
+	inaddr    InAddr
+	name      string
+	uuid      string
 	keepalive int
 	compression bool
 }
@@ -183,7 +195,7 @@ func (player *Player) ReadPacketWithoutCompression() (packet Packet, err error) 
 	if err != nil {
 		return
 	} else if packet != nil {
-		if config["logs"].(bool) {
+		if config.Logs {
 			log.Println("->", id, packet)
 		}
 		packet.Handle(player)
@@ -222,7 +234,7 @@ func (player *Player) ReadPacketWithCompression() (packet Packet, err error) {
 		if err != nil {
 			return
 		} else if packet != nil {
-			if config["logs"].(bool) {
+			if config.Logs {
 				log.Println("u->", id, packet)
 			}
 			packet.Handle(player)
@@ -258,7 +270,7 @@ func (player *Player) ReadPacketWithCompression() (packet Packet, err error) {
 		if err != nil {
 			return nil, err
 		} else if packet != nil {
-			if config["logs"].(bool) {
+			if config.Logs {
 				log.Println("c->", id, packet)
 			}
 			packet.Handle(player)
@@ -300,7 +312,7 @@ func (player *Player) WritePacketWithoutCompression(packet Packet) (err error){
 	player.conn.Write(ln.Bytes())
 	player.conn.Write(buff.Bytes())
 
-	if config["logs"].(bool) {
+	if config.Logs {
 		log.Println("<-", id, packet)
 	}
 	return nil
@@ -326,7 +338,7 @@ func (player *Player) WritePacketWithCompression(packet Packet) (err error){
 
 	var rBuff []byte;
 	var dataLength = 0
-	if buff.Len() < compressionThreshold {
+	if buff.Len() < config.Threshold {
 		rBuff = buff.Bytes()
 	} else {
 		var b bytes.Buffer
@@ -351,8 +363,8 @@ func (player *Player) WritePacketWithCompression(packet Packet) (err error){
 	player.conn.Write(buff2.Bytes())
 	player.conn.Write(rBuff)
 
-	if config["logs"].(bool) {
-		if buff.Len() < compressionThreshold {
+	if config.Logs {
+		if buff.Len() < config.Threshold {
 			log.Println("<-u", id, packet)
 		} else {
 			log.Println("<-c", id, packet)

@@ -1,12 +1,12 @@
 {
-  "port": 25565,
+  "listen_address": ":25565",
   "max_players": 100,
   "motd": "TyphoonLimbo server",
   "restricted": false,
   "logs": true,
-  "join_message": "eyJ0ZXh0IjoiWW91IGFyZSBpbnRvIHRoZSBsaW1ibyIsImNvbG9yIjoiZGFya19yZWQifQ==",
-  "boss_bar": "eyJ0ZXh0IjoiWW91IGFyZSBpbnRvIHRoZSBsaW1ibyIsImNvbG9yIjoiZGFya19yZWQifQ==",
-  "playerlist_header": "eyJ0ZXh0IjoiSGVyb2JyaW5lIGxpdmVzIGhlcmUiLCJjb2xvciI6InllbGxvdyIsImJvbGQiOnRydWV9",
+  "join_message": {"text":"You are into the limbo","color":"dark_red"},
+  "boss_bar": {"text":"You are into the limbo","color":"dark_red"},
+  "playerlist_header": {"text":"Herobrine lives here","color":"yellow","bold":true},
   "enable_compression": true,
   "compression_threshold": 256
 }

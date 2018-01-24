@@ -1,17 +1,18 @@
 package main
 
 import (
-	"log"
 	"fmt"
-	"github.com/satori/go.uuid"
+	"github.com/TyphoonMC/go.uuid"
+	"log"
 )
 
 type PacketHandshake struct {
 	protocol Protocol
-	address string
-	port uint16
-	state State
+	address  string
+	port     uint16
+	state    State
 }
+
 func (packet *PacketHandshake) Read(player *Player) (err error) {
 	protocol, err := player.ReadVarInt()
 	if err != nil {
@@ -51,7 +52,8 @@ func (packet *PacketHandshake) Id() int {
 	return 0x00
 }
 
-type PacketStatusRequest struct {}
+type PacketStatusRequest struct{}
+
 func (packet *PacketStatusRequest) Read(player *Player) (err error) {
 	return
 }
@@ -64,10 +66,10 @@ func (packet *PacketStatusRequest) Handle(player *Player) {
 		protocol = player.protocol
 	}
 
-	max_players := int(config["max_players"].(float64))
-	motd := config["motd"].(string)
+	max_players := config.MaxPlayers
+	motd := config.Motd
 
-	if max_players < players_count && !config["restricted"].(bool) {
+	if max_players < players_count && !config.Restricted {
 		max_players = players_count
 	}
 
@@ -84,6 +86,7 @@ func (packet *PacketStatusRequest) Id() int {
 type PacketStatusResponse struct {
 	response string
 }
+
 func (packet *PacketStatusResponse) Read(player *Player) (err error) {
 	return
 }
@@ -105,6 +108,7 @@ func (packet *PacketStatusResponse) Id() int {
 type PacketStatusPing struct {
 	time uint64
 }
+
 func (packet *PacketStatusPing) Read(player *Player) (err error) {
 	packet.time, err = player.ReadUInt64()
 	if err != nil {
@@ -132,6 +136,7 @@ func (packet *PacketStatusPing) Id() int {
 type PacketLoginStart struct {
 	username string
 }
+
 func (packet *PacketLoginStart) Read(player *Player) (err error) {
 	packet.username, err = player.ReadStringLimited(16)
 	if err != nil {
@@ -143,41 +148,42 @@ func (packet *PacketLoginStart) Read(player *Player) (err error) {
 func (packet *PacketLoginStart) Write(player *Player) (err error) {
 	return
 }
-var(
-	join_game = PacketPlayJoinGame{
-		entity_id: 0,
-		gamemode: SPECTATOR,
-		dimension: END,
-		difficulty: NORMAL,
-		level_type: DEFAULT,
-		max_players: 0xFF,
-		reduced_debug: false,
 
+var (
+	join_game = PacketPlayJoinGame{
+		entity_id:     0,
+		gamemode:      SPECTATOR,
+		dimension:     END,
+		difficulty:    NORMAL,
+		level_type:    DEFAULT,
+		max_players:   0xFF,
+		reduced_debug: false,
 	}
 	position_look = PacketPlayerPositionLook{}
 )
+
 func (packet *PacketLoginStart) Handle(player *Player) {
 	if !IsCompatible(player.protocol) {
 		player.LoginKick("Incompatible version")
 		return
 	}
 
-	max_players := int(config["max_players"].(float64))
+	max_players := config.MaxPlayers
 
-	if max_players <= players_count && config["restricted"].(bool) {
+	if max_players <= players_count && config.Restricted {
 		player.LoginKick("Server is full")
 	}
 
 	player.name = packet.username
 
-	if compressionEnabled && player.protocol >= V1_8 {
-		setCompression := PacketSetCompression{compressionThreshold}
+	if config.Compression && player.protocol >= V1_8 {
+		setCompression := PacketSetCompression{config.Threshold}
 		player.WritePacket(&setCompression)
 		player.compression = true
 	}
 
 	success := PacketLoginSuccess{
-		uuid: player.uuid,
+		uuid:     player.uuid,
 		username: player.name,
 	}
 	player.WritePacket(&success)
@@ -205,6 +211,7 @@ func (packet *PacketLoginStart) Id() int {
 type PacketLoginDisconnect struct {
 	component string
 }
+
 func (packet *PacketLoginDisconnect) Read(player *Player) (err error) {
 	return
 }
@@ -224,9 +231,10 @@ func (packet *PacketLoginDisconnect) Id() int {
 }
 
 type PacketLoginSuccess struct {
-	uuid string
+	uuid     string
 	username string
 }
+
 func (packet *PacketLoginSuccess) Read(player *Player) (err error) {
 	return
 }
@@ -274,6 +282,7 @@ func (packet *PacketSetCompression) Id() int {
 type PacketPlayChat struct {
 	message string
 }
+
 func (packet *PacketPlayChat) Read(player *Player) (err error) {
 	packet.message, err = player.ReadStringLimited(32767)
 	if err != nil {
@@ -289,7 +298,7 @@ func (packet *PacketPlayChat) Handle(player *Player) {
 	if len(packet.message) > 0 && packet.message[0] != '/' {
 		player.WritePacket(&PacketPlayMessage{
 			component: fmt.Sprintf(`{"text":"<%s> %s"}`, player.name, JsonEscape(packet.message)),
-			position: CHAT_BOX,
+			position:  CHAT_BOX,
 		})
 	}
 	return
@@ -300,8 +309,9 @@ func (packet *PacketPlayChat) Id() int {
 
 type PacketPlayMessage struct {
 	component string
-	position ChatPosition
+	position  ChatPosition
 }
+
 func (packet *PacketPlayMessage) Read(player *Player) (err error) {
 	return
 }
@@ -328,14 +338,15 @@ func (packet *PacketPlayMessage) Id() int {
 }
 
 type PacketBossBar struct {
-	uuid uuid.UUID
-	action BossBarAction
-	title string
-	health float32
-	color BossBarColor
+	uuid     uuid.UUID
+	action   BossBarAction
+	title    string
+	health   float32
+	color    BossBarColor
 	division BossBarDivision
-	flags uint8
+	flags    uint8
 }
+
 func (packet *PacketBossBar) Read(player *Player) (err error) {
 	return
 }
@@ -395,6 +406,7 @@ func (packet *PacketBossBar) Id() int {
 type PacketPlayDisconnect struct {
 	component string
 }
+
 func (packet *PacketPlayDisconnect) Read(player *Player) (err error) {
 	return
 }
@@ -416,6 +428,7 @@ func (packet *PacketPlayDisconnect) Id() int {
 type PacketPlayKeepAlive struct {
 	id int
 }
+
 func (packet *PacketPlayKeepAlive) Read(player *Player) (err error) {
 	if player.protocol >= V1_12_2 {
 		id, stt := player.ReadUInt64()
@@ -464,15 +477,16 @@ func (packet *PacketPlayKeepAlive) Id() int {
 }
 
 type PacketPlayChunkData struct {
-	x uint32
-	y uint32
-	ground_up_continuous bool
-	primary_bit_mask int
-	data_size int
-	data []ChunkSection
-	biomes [256]byte
+	x                     uint32
+	y                     uint32
+	ground_up_continuous  bool
+	primary_bit_mask      int
+	data_size             int
+	data                  []ChunkSection
+	biomes                [256]byte
 	block_entities_length int
 }
+
 func (packet *PacketPlayChunkData) Read(player *Player) (err error) {
 	return
 }
@@ -487,14 +501,15 @@ func (packet *PacketPlayChunkData) Id() int {
 }
 
 type PacketPlayJoinGame struct {
-	entity_id uint32
-	gamemode Gamemode
-	dimension Dimension
-	difficulty Difficulty
-	max_players uint8
-	level_type LevelType
+	entity_id     uint32
+	gamemode      Gamemode
+	dimension     Dimension
+	difficulty    Difficulty
+	max_players   uint8
+	level_type    LevelType
 	reduced_debug bool
 }
+
 func (packet *PacketPlayJoinGame) Read(player *Player) (err error) {
 	return
 }
@@ -550,14 +565,15 @@ func (packet *PacketPlayJoinGame) Id() int {
 }
 
 type PacketPlayerPositionLook struct {
-	x float64
-	y float64
-	z float64
-	yaw float32
-	pitch float32
-	flags uint8
+	x           float64
+	y           float64
+	z           float64
+	yaw         float32
+	pitch       float32
+	flags       uint8
 	teleport_id int
 }
+
 func (packet *PacketPlayerPositionLook) Read(player *Player) (err error) {
 	return
 }
@@ -612,6 +628,7 @@ type PacketPlayerListHeaderFooter struct {
 	header *string
 	footer *string
 }
+
 func (packet *PacketPlayerListHeaderFooter) Read(player *Player) (err error) {
 	return
 }

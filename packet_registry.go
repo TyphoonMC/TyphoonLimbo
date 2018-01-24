@@ -1,8 +1,8 @@
 package main
 
 import (
-	"reflect"
 	"log"
+	"reflect"
 )
 
 var (
@@ -17,7 +17,7 @@ type Packet interface {
 }
 
 func PacketTypeHash(state State, id int) int64 {
-	return int64(id)^(int64(state) << 32)
+	return int64(id) ^ (int64(state) << 32)
 }
 
 func InitPackets() {
@@ -30,10 +30,10 @@ func InitPackets() {
 }
 
 func (player *Player) HandlePacket(id int, length int) (packet Packet, err error) {
-	typ := packets[PacketTypeHash(player.state, id)];
+	typ := packets[PacketTypeHash(player.state, id)]
 
 	if typ == nil {
-		if config["logs"].(bool) {
+		if config.Logs {
 			log.Printf("Unknown packet #%d\n", id)
 		}
 
