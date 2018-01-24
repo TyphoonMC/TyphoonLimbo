@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/satori/go.uuid"
+	"github.com/TyphoonMC/go.uuid"
 	"log"
 )
 

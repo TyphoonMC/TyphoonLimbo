@@ -31,7 +31,7 @@ A limbo server is a fallback server able to handle a massive amount of simultane
 
 ### How to build and start
 ```shell
-go get github.com/satori/go.uuid
+go get github.com/TyphoonMC/go.uuid
 go build
 ./TyphoonLimbo
 ```

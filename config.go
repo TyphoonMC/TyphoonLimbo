@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/satori/go.uuid"
+	"github.com/TyphoonMC/go.uuid"
 	"io/ioutil"
 )
 

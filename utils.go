@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/satori/go.uuid"
+	"github.com/TyphoonMC/go.uuid"
 	"io"
 	"math"
 	"strings"
