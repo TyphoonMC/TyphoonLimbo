@@ -1,12 +1,7 @@
 # TyphoonLimbo
 ## Lightweight minecraft limbo server
 
-![1.7.X](https://img.shields.io/badge/1.7.X-ready-brightgreen.svg "1.7.X")
-![1.8.X](https://img.shields.io/badge/1.8.X-ready-brightgreen.svg "1.8.X")
-![1.9.X](https://img.shields.io/badge/1.9.X-ready-brightgreen.svg "1.9.X")
-![1.10.X](https://img.shields.io/badge/1.10.X-ready-brightgreen.svg "1.10.X")
-![1.11.X](https://img.shields.io/badge/1.11.X-ready-brightgreen.svg "1.11.X")
-![1.12.X](https://img.shields.io/badge/1.12.X-ready-brightgreen.svg "1.12.X")
+[![Build Status](https://travis-ci.org/TyphoonMC/TyphoonLimbo.svg?branch=master)](https://travis-ci.org/TyphoonMC/TyphoonLimbo)
 ----
 ### What is a limbo server ?
 A limbo server is a fallback server able to handle a massive amount of simultaneous connections. The player spawns into the void then waits here. It can be used to keep players connected to a network after a lobby crashed or as an afk server.
