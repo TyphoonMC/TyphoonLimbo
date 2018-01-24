@@ -43,7 +43,7 @@ func InitConfig() (err error) {
 
 	if config.BossBar != nil {
 		bossbar_create = PacketBossBar{
-			uuid:     uuid.NewV4(),
+			uuid:     uuid.Must(uuid.NewV4()),
 			action:   BOSSBAR_ADD,
 			title:    string(config.BossBar),
 			health:   1.0,
