@@ -16,13 +16,15 @@ type Config struct {
 	BossBar          json.RawMessage `json:"boss_bar"`
 	PlayerListHeader json.RawMessage `json:"playerlist_header"`
 	PlayerListFooter json.RawMessage `json:"playerlist_footer"`
+	Compression      bool            `json:"enable_compression"`
+	Threshold        int             `json:"compression_threshold"`
 }
 
 var (
-	config         Config
-	join_message   PacketPlayMessage
-	bossbar_create PacketBossBar
-	playerlist_hf  PacketPlayerListHeaderFooter
+	config              Config
+	join_message        PacketPlayMessage
+	bossbar_create      PacketBossBar
+	playerlist_hf       PacketPlayerListHeaderFooter
 )
 
 func InitConfig() (err error) {

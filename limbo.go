@@ -75,6 +75,7 @@ func HandleConnection(conn net.Conn, id int) {
 		name:      "",
 		uuid:      "d979912c-bb24-4f23-a6ac-c32985a1e5d3",
 		keepalive: 0,
+		compression: false,
 	}
 
 	for {
