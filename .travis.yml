@@ -25,6 +25,7 @@ script:
     - go vet ./...
     - megacheck -unused.consts=false ./...
     - gocyclo -over 20 $GO_FILES
+    - go build
 
 notifications:
     email: false
