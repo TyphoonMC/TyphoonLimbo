@@ -1,13 +1,13 @@
 package main
 
 import (
-	"path/filepath"
-	"os"
-	"log"
-	"strings"
-	"io/ioutil"
 	"encoding/json"
+	"io/ioutil"
+	"log"
+	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 type Map struct {
@@ -16,19 +16,19 @@ type Map struct {
 }
 
 type Content struct {
-	Name string `json:"name"`
+	Name     string   `json:"name"`
 	Protocol Protocol `json:"protocol"`
-	Base Protocol `json:"base"`
-	Map Map `json:"map"`
+	Base     Protocol `json:"base"`
+	Map      Map      `json:"map"`
 }
 
 type Type struct {
-	Name string `json:"name"`
-	Version int `json:"version"`
+	Name    string `json:"name"`
+	Version int    `json:"version"`
 }
 
 type Module struct {
-	Type Type `json:"type"`
+	Type    Type    `json:"type"`
 	Content Content `json:"content"`
 }
 
@@ -225,12 +225,16 @@ func loadHackModule(module *Module) {
 		if module.Content.Base > V1_10 {
 			for i, v := range module.Content.Map.Clientbound {
 				ui, uv, err := convUI(i, v)
-				if err != nil { continue }
+				if err != nil {
+					continue
+				}
 				clientbound[module.Content.Protocol][lastClientbound(module.Content.Base, ui)] = uv
 			}
 			for i, v := range module.Content.Map.Serverbound {
 				ui, uv, err := convUI(i, v)
-				if err != nil { continue }
+				if err != nil {
+					continue
+				}
 				serverbound[module.Content.Protocol][uv] = serverbound[module.Content.Base][ui]
 			}
 		}
@@ -243,7 +247,7 @@ func loadHackModule(module *Module) {
 func loadHackModuleFile(path string) {
 	raw, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatal(os.Stderr, "Can't read file", path)
+		log.Fatal("Can't read file", path)
 		return
 	}
 
@@ -266,7 +270,7 @@ func initHackModules() {
 		return nil
 	})
 	if err != nil {
-		log.Fatal(os.Stderr, "Can't find modules folder.")
+		log.Fatal("Can't find modules folder.")
 	}
 }
 
