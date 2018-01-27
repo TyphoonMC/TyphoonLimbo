@@ -1,5 +1,37 @@
 package main
 
+import (
+	"path/filepath"
+	"os"
+	"log"
+	"strings"
+	"io/ioutil"
+	"encoding/json"
+	"strconv"
+)
+
+type Map struct {
+	Clientbound map[string]string `json:"clientbound"`
+	Serverbound map[string]string `json:"serverbound"`
+}
+
+type Content struct {
+	Name string `json:"name"`
+	Protocol Protocol `json:"protocol"`
+	Base Protocol `json:"base"`
+	Map Map `json:"map"`
+}
+
+type Type struct {
+	Name string `json:"name"`
+	Version int `json:"version"`
+}
+
+type Module struct {
+	Type Type `json:"type"`
+	Content Content `json:"content"`
+}
+
 var (
 	clientbound = make(map[Protocol]map[int]int)
 	serverbound = make(map[Protocol]map[int]int)
@@ -161,6 +193,81 @@ func InitHacks() {
 	// Hack 1.12.2
 	clientbound[V1_12_2] = clientbound[V1_12_1]
 	serverbound[V1_12_2] = serverbound[V1_12_1]
+
+	initHackModules()
+}
+
+func convUI(i string, v string) (uir int, uvr int, err error) {
+	ui, err := strconv.ParseInt(i, 0, 32)
+	if err != nil {
+		return 0, 0, err
+	}
+	uv, err := strconv.ParseInt(v, 0, 32)
+	if err != nil {
+		return 0, 0, err
+	}
+	return int(ui), int(uv), nil
+}
+
+func loadHackModule(module *Module) {
+	if IsCompatible(module.Content.Base) {
+		if clientbound[module.Content.Base] != nil {
+			clientbound[module.Content.Protocol] = copyHack(clientbound[module.Content.Base])
+		} else {
+			clientbound[module.Content.Protocol] = make(map[int]int)
+		}
+		if serverbound[module.Content.Base] != nil {
+			serverbound[module.Content.Protocol] = copyHack(serverbound[module.Content.Base])
+		} else {
+			serverbound[module.Content.Protocol] = make(map[int]int)
+		}
+
+		if module.Content.Base > V1_10 {
+			for i, v := range module.Content.Map.Clientbound {
+				ui, uv, err := convUI(i, v)
+				if err != nil { continue }
+				clientbound[module.Content.Protocol][lastClientbound(module.Content.Base, ui)] = uv
+			}
+			for i, v := range module.Content.Map.Serverbound {
+				ui, uv, err := convUI(i, v)
+				if err != nil { continue }
+				serverbound[module.Content.Protocol][uv] = serverbound[module.Content.Base][ui]
+			}
+		}
+
+		registerProtocol(module.Content.Protocol)
+		log.Println("Added", module.Content.Name, "protocol fast support")
+	}
+}
+
+func loadHackModuleFile(path string) {
+	raw, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Fatal(os.Stderr, "Can't read file", path)
+		return
+	}
+
+	var module Module
+	err = json.Unmarshal(raw, &module)
+	if err != nil {
+		return
+	}
+
+	if module.Type.Name == "protocol-map" && module.Type.Version == 1 {
+		loadHackModule(&module)
+	}
+}
+
+func initHackModules() {
+	err := filepath.Walk("modules", func(path string, info os.FileInfo, err error) error {
+		if err == nil && !info.IsDir() && strings.HasSuffix(path, ".json") {
+			loadHackModuleFile(path)
+		}
+		return nil
+	})
+	if err != nil {
+		log.Fatal(os.Stderr, "Can't find modules folder.")
+	}
 }
 
 func lastClientbound(proto Protocol, i int) int {
