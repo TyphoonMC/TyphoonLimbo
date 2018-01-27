@@ -24,6 +24,13 @@ A limbo server is a fallback server able to handle a massive amount of simultane
 | 1.12.1            | 338              | true      |                                                     |
 | 1.12.2            | 340              | true      |                                                     |
 
+#### Snapshot support
+TyphoonLimbo is able to load [TyphoonDep protocol-map modules](https://github.com/TyphoonMC/TyphoonDep/tree/master/protocol-map) to add a partial snapshots support.
+
+All json files are loaded from the "modules" folder in the same directory as the TyphoonLimbo binary.
+
+You can generate a protocol-map module with the [fetcher](https://github.com/TyphoonMC/TyphoonDep/tree/master/protocol-map/fetcher). Just pick the "page" link of your wanted version on [wiki.vg](http://wiki.vg/Protocol_version_numbers) as argument of the fecther and the magic will happen.
+
 ### How to build and start
 ```shell
 go get github.com/TyphoonMC/go.uuid
