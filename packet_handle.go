@@ -20,7 +20,7 @@ func (packet *PacketHandshake) Read(player *Player) (err error) {
 		return
 	}
 	packet.protocol = Protocol(protocol)
-	packet.address, err = player.ReadStringLimited(300)
+	packet.address, err = player.ReadStringLimited(config.BufferConfig.HandshakeAddress)
 	if err != nil {
 		log.Print(err)
 		return
@@ -133,7 +133,7 @@ type PacketLoginStart struct {
 }
 
 func (packet *PacketLoginStart) Read(player *Player) (err error) {
-	packet.username, err = player.ReadStringLimited(16)
+	packet.username, err = player.ReadStringLimited(config.BufferConfig.PlayerName)
 	if err != nil {
 		log.Print(err)
 		return
@@ -273,7 +273,7 @@ type PacketPlayChat struct {
 }
 
 func (packet *PacketPlayChat) Read(player *Player) (err error) {
-	packet.message, err = player.ReadStringLimited(32767)
+	packet.message, err = player.ReadStringLimited(config.BufferConfig.ChatMessage)
 	if err != nil {
 		log.Print(err)
 		return
