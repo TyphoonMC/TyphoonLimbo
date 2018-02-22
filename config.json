@@ -8,5 +8,10 @@
   "boss_bar": {"text":"You are into the limbo","color":"dark_red"},
   "playerlist_header": {"text":"Herobrine lives here","color":"yellow","bold":true},
   "enable_compression": false,
-  "compression_threshold": 256
+  "compression_threshold": 256,
+  "buffer_config":  {
+    "handshake_address": 300,
+    "player_name": 16,
+    "chat_message": 32767
+  }
 }
