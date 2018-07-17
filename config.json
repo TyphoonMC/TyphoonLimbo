@@ -1,5 +1,5 @@
 {
-  "listen_address": ":25566",
+  "listen_address": ":25565",
   "max_players": 100,
   "motd": "TyphoonLimbo server",
   "restricted": false,
