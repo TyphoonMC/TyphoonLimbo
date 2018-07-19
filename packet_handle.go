@@ -389,7 +389,7 @@ func (packet *PacketBossBar) Id() int {
 
 type PacketPlayPluginMessage struct {
 	channel string
-	data []byte
+	data    []byte
 }
 
 func (packet *PacketPlayPluginMessage) Read(player *Player, length int) (err error) {
@@ -400,7 +400,7 @@ func (packet *PacketPlayPluginMessage) Read(player *Player, length int) (err err
 		return
 	}
 
-	dataLength := length-read
+	dataLength := length - read
 	if player.protocol < V1_8 {
 		sread, err := player.ReadUInt16()
 		if err != nil {

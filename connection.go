@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"compress/zlib"
 	"encoding/binary"
+	"fmt"
 	"log"
 	"net"
-	"fmt"
 )
 
 type State int8

@@ -231,9 +231,9 @@ func (player *Player) ReadNStringLimited(max int) (s string, read int, err error
 	buffer := make([]byte, length)
 	_, err = io.ReadFull(player.io.rdr, buffer)
 	if err != nil {
-		return "", read+length, err
+		return "", read + length, err
 	}
-	return string(buffer), read+length, nil
+	return string(buffer), read + length, nil
 }
 
 func (player *Player) WriteByteArray(data []byte) (err error) {
