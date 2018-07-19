@@ -40,6 +40,7 @@ func KeepAlive() {
 		id: 0,
 	}
 	for {
+		playersMutex.Lock()
 		for _, player := range players {
 			if player.state == PLAY {
 				if player.keepalive != 0 {
@@ -52,6 +53,7 @@ func KeepAlive() {
 				player.WritePacket(keepalive)
 			}
 		}
+		playersMutex.Unlock()
 		time.Sleep(5000000000)
 	}
 }
