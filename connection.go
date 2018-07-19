@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/zlib"
 	"encoding/binary"
+	"fmt"
 	"log"
 	"net"
 )
@@ -192,7 +193,7 @@ func (player *Player) ReadPacketWithoutCompression() (packet Packet, err error) 
 		return
 	} else if packet != nil {
 		if config.Logs {
-			log.Println("->", id, packet)
+			log.Printf("#%d -> %d %s", player.id, id, fmt.Sprint(packet))
 		}
 		packet.Handle(player)
 	}
@@ -231,7 +232,7 @@ func (player *Player) ReadPacketWithCompression() (packet Packet, err error) {
 			return
 		} else if packet != nil {
 			if config.Logs {
-				log.Println("u->", id, packet)
+				log.Printf("#%d u-> %d %s", player.id, id, fmt.Sprint(packet))
 			}
 			packet.Handle(player)
 		}
@@ -267,7 +268,7 @@ func (player *Player) ReadPacketWithCompression() (packet Packet, err error) {
 			return nil, err
 		} else if packet != nil {
 			if config.Logs {
-				log.Println("c->", id, packet)
+				log.Printf("#%d c-> %d %s", player.id, id, fmt.Sprint(packet))
 			}
 			packet.Handle(player)
 		}
@@ -309,7 +310,7 @@ func (player *Player) WritePacketWithoutCompression(packet Packet) (err error) {
 	player.conn.Write(buff.Bytes())
 
 	if config.Logs {
-		log.Println("<-", id, packet)
+		log.Printf("#%d <- %d %s", player.id, id, fmt.Sprint(packet))
 	}
 	return nil
 }
