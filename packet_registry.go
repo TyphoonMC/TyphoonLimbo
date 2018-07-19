@@ -11,7 +11,7 @@ var (
 
 type Packet interface {
 	Write(*Player) error
-	Read(*Player) error
+	Read(*Player, int) error
 	Handle(*Player)
 	Id() int
 }
@@ -26,6 +26,7 @@ func InitPackets() {
 	packets[PacketTypeHash(STATUS, 0x01)] = reflect.TypeOf((*PacketStatusPing)(nil)).Elem()
 	packets[PacketTypeHash(LOGIN, 0x00)] = reflect.TypeOf((*PacketLoginStart)(nil)).Elem()
 	packets[PacketTypeHash(PLAY, 0x02)] = reflect.TypeOf((*PacketPlayChat)(nil)).Elem()
+	packets[PacketTypeHash(PLAY, 0x09)] = reflect.TypeOf((*PacketPlayPluginMessage)(nil)).Elem()
 	packets[PacketTypeHash(PLAY, 0x0B)] = reflect.TypeOf((*PacketPlayKeepAlive)(nil)).Elem()
 }
 
@@ -34,7 +35,7 @@ func (player *Player) HandlePacket(id int, length int) (packet Packet, err error
 
 	if typ == nil {
 		if config.Logs {
-			log.Printf("Unknown packet #%d\n", id)
+			log.Printf("%d -> Unknown packet #%d\n", player.id, id)
 		}
 
 		var buff []byte
@@ -58,7 +59,7 @@ func (player *Player) HandlePacket(id int, length int) (packet Packet, err error
 	}
 
 	packet, _ = reflect.New(typ).Interface().(Packet)
-	if err = packet.Read(player); err != nil {
+	if err = packet.Read(player, length); err != nil {
 		return nil, err
 	}
 	return

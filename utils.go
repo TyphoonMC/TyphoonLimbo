@@ -215,6 +215,38 @@ func (player *Player) ReadStringLimited(max int) (s string, err error) {
 	return string(buffer), nil
 }
 
+func (player *Player) ReadNStringLimited(max int) (s string, read int, err error) {
+	max = (max * 4) + 3
+
+	length, err := player.ReadVarInt()
+	buff := make([]byte, 8)
+	read = binary.PutUvarint(buff, uint64(length))
+	if err != nil {
+		return "", read, err
+	}
+	if length > max {
+		player.Kick("Invalid packet")
+		return "", read, nil
+	}
+	buffer := make([]byte, length)
+	_, err = io.ReadFull(player.io.rdr, buffer)
+	if err != nil {
+		return "", read+length, err
+	}
+	return string(buffer), read+length, nil
+}
+
+func (player *Player) WriteByteArray(data []byte) (err error) {
+	_, err = player.io.wtr.Write(data)
+	return err
+}
+
+func (player *Player) ReadByteArray(length int) (data []byte, err error) {
+	data = make([]byte, length)
+	_, err = player.io.rdr.Read(data)
+	return data, err
+}
+
 func (player *Player) WriteString(s string) (err error) {
 	buff := []byte(s)
 	err = player.WriteVarInt(len(buff))
