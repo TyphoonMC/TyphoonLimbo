@@ -25,20 +25,20 @@ func loadConfig(core *typhoon.Core) {
 
 	if config.JoinMessage != nil {
 		joinMessage = typhoon.PacketPlayMessage{
-			string(config.JoinMessage),
-			typhoon.CHAT_BOX,
+			Component: string(config.JoinMessage),
+			Position:  typhoon.CHAT_BOX,
 		}
 	}
 
 	if config.BossBar != nil {
 		bossbarCreate = typhoon.PacketBossBar{
-			uuid.Must(uuid.NewV4()),
-			typhoon.BOSSBAR_ADD,
-			string(config.BossBar),
-			1.0,
-			typhoon.BOSSBAR_COLOR_RED,
-			typhoon.BOSSBAR_NODIVISION,
-			0,
+			UUID:     uuid.Must(uuid.NewV4()),
+			Action:   typhoon.BOSSBAR_ADD,
+			Title:    string(config.BossBar),
+			Health:   1.0,
+			Color:    typhoon.BOSSBAR_COLOR_RED,
+			Division: typhoon.BOSSBAR_NODIVISION,
+			Flags:    0,
 		}
 	}
 
