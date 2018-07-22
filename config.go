@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/TyphoonMC/TyphoonCore"
+	t "github.com/TyphoonMC/TyphoonCore"
 	"github.com/TyphoonMC/go.uuid"
 )
 
@@ -15,34 +15,26 @@ type Config struct {
 
 var (
 	config        Config
-	joinMessage   typhoon.PacketPlayMessage
-	bossbarCreate typhoon.PacketBossBar
-	playerListHF  typhoon.PacketPlayerListHeaderFooter
+	bossbarCreate t.PacketBossBar
+	playerListHF  t.PacketPlayerListHeaderFooter
 )
 
-func loadConfig(core *typhoon.Core) {
+func loadConfig(core *t.Core) {
 	core.GetConfig(&config)
 
-	if config.JoinMessage != nil {
-		joinMessage = typhoon.PacketPlayMessage{
-			Component: string(config.JoinMessage),
-			Position:  typhoon.CHAT_BOX,
-		}
-	}
-
 	if config.BossBar != nil {
-		bossbarCreate = typhoon.PacketBossBar{
+		bossbarCreate = t.PacketBossBar{
 			UUID:     uuid.Must(uuid.NewV4()),
-			Action:   typhoon.BOSSBAR_ADD,
+			Action:   t.BOSSBAR_ADD,
 			Title:    string(config.BossBar),
 			Health:   1.0,
-			Color:    typhoon.BOSSBAR_COLOR_RED,
-			Division: typhoon.BOSSBAR_NODIVISION,
+			Color:    t.BOSSBAR_COLOR_RED,
+			Division: t.BOSSBAR_NODIVISION,
 			Flags:    0,
 		}
 	}
 
-	playerListHF = typhoon.PacketPlayerListHeaderFooter{}
+	playerListHF = t.PacketPlayerListHeaderFooter{}
 	if config.PlayerListHeader != nil {
 		msg := string(config.PlayerListHeader)
 		playerListHF.Header = &msg

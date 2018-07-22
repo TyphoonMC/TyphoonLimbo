@@ -1,19 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"github.com/TyphoonMC/TyphoonCore"
+	t "github.com/TyphoonMC/TyphoonCore"
 )
 
 func main() {
-	core := typhoon.Init()
+	core := t.Init()
 	core.SetBrand("typhoonlimbo")
 
 	loadConfig(core)
 
-	core.On(func(e *typhoon.PlayerJoinEvent) {
-		if &joinMessage != nil {
-			e.Player.WritePacket(&joinMessage)
+	core.On(func(e *t.PlayerJoinEvent) {
+		if config.JoinMessage != nil {
+			e.Player.SendRawMessage(string(config.JoinMessage))
 		}
 		if &bossbarCreate != nil {
 			e.Player.WritePacket(&bossbarCreate)
@@ -23,11 +22,15 @@ func main() {
 		}
 	})
 
-	core.On(func(e *typhoon.PlayerChatEvent) {
-		e.Player.WritePacket(&typhoon.PacketPlayMessage{
-			Component: fmt.Sprintf(`{"text":"<%s> %s"}`, e.Player.GetName(), typhoon.JsonEscape(e.Message)),
-			Position:  typhoon.CHAT_BOX,
+	core.On(func(e *t.PlayerChatEvent) {
+		msg := t.ChatMessage("")
+		msg.SetExtra([]t.IChatComponent{
+			t.ChatMessage("<"),
+			t.ChatMessage(e.Player.GetName()),
+			t.ChatMessage("> "),
+			t.ChatMessage(e.Message),
 		})
+		e.Player.SendMessage(msg)
 	})
 
 	core.Start()
