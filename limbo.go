@@ -40,6 +40,7 @@ func KeepAlive() {
 		id: 0,
 	}
 	for {
+		playersMutex.Lock()
 		for _, player := range players {
 			if player.state == PLAY {
 				if player.keepalive != 0 {
@@ -52,12 +53,13 @@ func KeepAlive() {
 				player.WritePacket(keepalive)
 			}
 		}
+		playersMutex.Unlock()
 		time.Sleep(5000000000)
 	}
 }
 
 func HandleConnection(conn net.Conn, id int) {
-	log.Printf("%s connected.", conn.RemoteAddr().String())
+	log.Printf("%s(#%d) connected.", conn.RemoteAddr().String(), id)
 
 	player := &Player{
 		id:       id,
@@ -87,5 +89,5 @@ func HandleConnection(conn net.Conn, id int) {
 
 	player.unregister()
 	conn.Close()
-	log.Printf("%s disconnected.", conn.RemoteAddr().String())
+	log.Printf("%s(#%d) disconnected.", conn.RemoteAddr().String(), id)
 }
