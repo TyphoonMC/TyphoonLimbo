@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/TyphoonMC/go.uuid"
 	"log"
@@ -440,9 +441,13 @@ func (packet *PacketPlayPluginMessage) Write(player *Player) (err error) {
 func (packet *PacketPlayPluginMessage) Handle(player *Player) {
 	if packet.channel == "MC|Brand" || packet.channel == "minecraft:brand" {
 		log.Printf("%s is using %s client", player.name, string(packet.data))
+		s := "typhoonlimbo"
+		buff := make([]byte, len(s)+1)
+		length := binary.PutUvarint(buff, uint64(len(s)))
+		copy(buff[length:], []byte(s))
 		player.WritePacket(&PacketPlayPluginMessage{
 			packet.channel,
-			[]byte("typhoonlimbo"),
+			buff,
 		})
 	}
 }
