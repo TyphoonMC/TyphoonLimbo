@@ -37,6 +37,8 @@ You can generate a protocol-map module with the [fetcher](https://github.com/Typ
 
 ### How to build and start
 ```shell
+git clone https://github.com/TyphoonMC/TyphoonLimbo.git
+cd TyphoonLimbo
 go get github.com/TyphoonMC/go.uuid
 go build
 ./TyphoonLimbo
