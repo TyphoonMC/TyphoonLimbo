@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/TyphoonMC/go.uuid"
 	"io"
+	"log"
 	"math"
 	"strings"
 )
@@ -32,18 +33,49 @@ func (player *Player) ReadByte() (b byte, err error) {
 }
 
 func (player *Player) ReadVarInt() (i int, err error) {
-	v, err := binary.ReadUvarint(player.io)
-	if err != nil {
-		return 0, err
+	var numRead uint = 0
+	var result uint = 0
+	log.Println("Read varint")
+	for {
+		read, err := player.ReadByte()
+		if err != nil {
+			return -1, err
+		}
+		value := uint(read & 0x7F)
+		result |= value << (7 * numRead)
+		log.Println(result)
+		numRead++
+		if numRead > 5 {
+			return -1, err
+		}
+
+		if (read & 0x80) == 0 {
+			break
+		}
 	}
-	return int(v), nil
+
+	return int(result), nil
 }
 
 func (player *Player) WriteVarInt(i int) (err error) {
-	buff := player.io.buffer[:]
-	length := binary.PutUvarint(buff, uint64(i))
-	_, err = player.io.wtr.Write(buff[:length])
-	return err
+	u := uint(i)
+	log.Println("Write varint")
+	for {
+		temp := (byte)(i & 0x7F)
+		u >>= 7
+		if u != 0 {
+			temp |= 0x80
+		}
+		buff := player.io.buffer[:1]
+		log.Println(temp)
+		buff[0] = temp
+		player.io.wtr.Write(buff)
+
+		if i == 0 {
+			break
+		}
+	}
+	return nil
 }
 
 func (player *Player) ReadBool() (b bool, err error) {
