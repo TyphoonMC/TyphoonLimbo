@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/TyphoonMC/go.uuid"
 	"io"
-	"log"
 	"math"
 	"strings"
 )
@@ -24,26 +23,16 @@ func (rdrwtr ConnReadWrite) ReadByte() (b byte, err error) {
 	return buff[0], nil
 }
 
-func (player *Player) ReadByte() (b byte, err error) {
-	buff := player.io.buffer[:1]
-	if _, err := io.ReadFull(player.conn, buff); err != nil {
-		return 0, err
-	}
-	return buff[0], nil
-}
-
 func (player *Player) ReadVarInt() (i int, err error) {
 	var numRead uint = 0
 	var result uint = 0
-	log.Println("Read varint")
 	for {
-		read, err := player.ReadByte()
+		read, err := player.io.ReadByte()
 		if err != nil {
 			return -1, err
 		}
 		value := uint(read & 0x7F)
 		result |= value << (7 * numRead)
-		log.Println(result)
 		numRead++
 		if numRead > 5 {
 			return -1, err
@@ -59,22 +48,22 @@ func (player *Player) ReadVarInt() (i int, err error) {
 
 func (player *Player) WriteVarInt(i int) (err error) {
 	u := uint(i)
-	log.Println("Write varint")
+	bf := newVarBuffer(5)
 	for {
-		temp := (byte)(i & 0x7F)
+		temp := (byte)(u & 0x7F)
 		u >>= 7
 		if u != 0 {
 			temp |= 0x80
 		}
 		buff := player.io.buffer[:1]
-		log.Println(temp)
 		buff[0] = temp
-		player.io.wtr.Write(buff)
+		bf.Write(buff)
 
-		if i == 0 {
+		if u == 0 {
 			break
 		}
 	}
+	player.io.wtr.Write(bf.Bytes())
 	return nil
 }
 
