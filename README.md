@@ -39,19 +39,6 @@ You can generate a protocol-map module with the [fetcher](https://github.com/Typ
 ```shell
 git clone https://github.com/TyphoonMC/TyphoonLimbo.git
 cd TyphoonLimbo
-go get github.com/TyphoonMC/go.uuid
 go build
 ./TyphoonLimbo
 ```
-
-### Security concerns
-TyphoonLimbo may be used behind a Bungeecord proxy.
-
-### Performance
-#### Memory cost
-Initial memory usage is about 580KB. You should consider an additonal 200KB per player connection (Used by socket buffers and packet wrappers)
-
-#### CPU cost
-Feel free to send me your metrics while using it.
-
-My actual CPU cost is about 0% while keeping 10 clients. An older version of TyphoonLimbo was used on my network and handled about 800 connections correctly after a massive crash.
