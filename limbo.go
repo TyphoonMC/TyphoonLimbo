@@ -1,93 +1,37 @@
 package main
 
 import (
-	"bufio"
-	"log"
-	"math/rand"
-	"net"
-	"time"
-)
-
-var (
-	connCounter = 0
+	t "github.com/TyphoonMC/TyphoonCore"
 )
 
 func main() {
-	InitConfig()
-	InitPackets()
-	InitHacks()
+	core := t.Init()
+	core.SetBrand("typhoonlimbo")
 
-	ln, err := net.Listen("tcp", config.ListenAddress)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Server launched on port", config.ListenAddress)
-	go KeepAlive()
-	for {
-		conn, err := ln.Accept()
-		if err != nil {
-			log.Print(err)
-		} else {
-			connCounter += 1
-			go HandleConnection(conn, connCounter)
+	loadConfig(core)
+
+	core.On(func(e *t.PlayerJoinEvent) {
+		if config.JoinMessage != nil {
+			e.Player.SendRawMessage(string(config.JoinMessage))
 		}
-	}
-}
-
-func KeepAlive() {
-	r := rand.New(rand.NewSource(15768735131534))
-	keepalive := &PacketPlayKeepAlive{
-		id: 0,
-	}
-	for {
-		playersMutex.Lock()
-		for _, player := range players {
-			if player.state == PLAY {
-				if player.keepalive != 0 {
-					player.Kick("Timed out")
-				}
-
-				id := int(r.Int31())
-				keepalive.id = id
-				player.keepalive = id
-				player.WritePacket(keepalive)
-			}
+		if &bossbarCreate != nil {
+			e.Player.WritePacket(&bossbarCreate)
 		}
-		playersMutex.Unlock()
-		time.Sleep(5000000000)
-	}
-}
-
-func HandleConnection(conn net.Conn, id int) {
-	log.Printf("%s(#%d) connected.", conn.RemoteAddr().String(), id)
-
-	player := &Player{
-		id:       id,
-		conn:     conn,
-		state:    HANDSHAKING,
-		protocol: V1_10,
-		io: &ConnReadWrite{
-			rdr: bufio.NewReader(conn),
-			wtr: bufio.NewWriter(conn),
-		},
-		inaddr: InAddr{
-			"",
-			0,
-		},
-		name:        "",
-		uuid:        "d979912c-bb24-4f23-a6ac-c32985a1e5d3",
-		keepalive:   0,
-		compression: false,
-	}
-
-	for {
-		_, err := player.ReadPacket()
-		if err != nil {
-			break
+		if &playerListHF != nil {
+			e.Player.WritePacket(&playerListHF)
 		}
-	}
+	})
 
-	player.unregister()
-	conn.Close()
-	log.Printf("%s(#%d) disconnected.", conn.RemoteAddr().String(), id)
+	core.On(func(e *t.PlayerChatEvent) {
+		msg := t.ChatMessage("")
+		msg.SetExtra([]t.IChatComponent{
+			t.ChatMessage("<"),
+			t.ChatMessage(e.Player.GetName()),
+			t.ChatMessage("> "),
+			t.ChatMessage(e.Message),
+		})
+		e.Player.SendMessage(msg)
+	})
+
+	core.Start()
 }

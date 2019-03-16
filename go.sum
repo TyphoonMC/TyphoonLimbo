@@ -1,0 +1,6 @@
+github.com/TyphoonMC/TyphoonCore v0.0.1 h1:UZGwBJNY+04mDYs8ZFGFrP+X+F6ONeS8Rmqp8+unh7k=
+github.com/TyphoonMC/TyphoonCore v0.0.1/go.mod h1:YTXHhhmg+VCncxFzSmcMco28EDr+wKioZYIyM7zIzCg=
+github.com/TyphoonMC/go.uuid v1.2.0 h1:shGDZJlalmYzP1d6DZkV6G8O97BwMcm03oEMQKv7i38=
+github.com/TyphoonMC/go.uuid v1.2.0/go.mod h1:EA3G1ph1GIr+QuXTL9qq8IJihUI+kKd7NR5hyxP3bZM=
+github.com/TyphoonMC/go.uuid v1.2.1-0.20180103174451-36e9d2ebbde5 h1:PmkiMBzbNG1XlV/3Z8RKP/wjmbn3qZLKdCZVHvmimIU=
+github.com/TyphoonMC/go.uuid v1.2.1-0.20180103174451-36e9d2ebbde5/go.mod h1:EA3G1ph1GIr+QuXTL9qq8IJihUI+kKd7NR5hyxP3bZM=

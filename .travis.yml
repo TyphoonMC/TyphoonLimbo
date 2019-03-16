@@ -18,6 +18,7 @@ before_install:
     - GO_FILES=$(find . -iname '*.go' -type f | grep -v /vendor/)
     - go get github.com/fzipp/gocyclo
     - go get github.com/TyphoonMC/go.uuid
+    - go get github.com/TyphoonMC/TyphoonCore
 
 script:
     - test -z $(gofmt -s -l $GO_FILES)
