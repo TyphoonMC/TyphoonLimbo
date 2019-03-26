@@ -24,7 +24,7 @@ func loadConfig(core *t.Core) {
 
 	if config.BossBar != nil {
 		bossbarCreate = t.PacketBossBar{
-			UUID:     uuid.Must(uuid.NewV4()),
+			UUID:     uuid.NewV4(),
 			Action:   t.BOSSBAR_ADD,
 			Title:    string(config.BossBar),
 			Health:   1.0,
