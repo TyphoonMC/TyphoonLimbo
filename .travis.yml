@@ -1,80 +1,70 @@
 language: go
 sudo: false
-
 go:
-    - 1.6.x
-    - 1.7.x
-    - 1.8.x
-    - 1.9.x
-    - 1.10.x
-    - 1.11.x
-    - 1.12.x
-    - master
-
+- 1.6.x
+- 1.7.x
+- 1.8.x
+- 1.9.x
+- 1.10.x
+- 1.11.x
+- 1.12.x
+- master
 matrix:
-    allow_failures:
-        - go: master
-    fast_finish: true
-
+  allow_failures:
+  - go: master
+  fast_finish: true
 before_install:
-    - GO_FILES=$(find . -iname '*.go' -type f | grep -v /vendor/)
-    - go get github.com/fzipp/gocyclo
-    - go get github.com/TyphoonMC/go.uuid
-    - go get github.com/TyphoonMC/TyphoonCore
-
+- GO_FILES=$(find . -iname '*.go' -type f | grep -v /vendor/)
+- go get github.com/fzipp/gocyclo
+- go install
 script:
-    - test -z $(gofmt -s -l $GO_FILES)
-    - go test -v -race ./...
-    - go vet ./...
-    - gocyclo -over 20 $GO_FILES
-    - go build
-
+- test -z $(gofmt -s -l $GO_FILES)
+- go test -v -race ./...
+- go vet ./...
+- gocyclo -over 20 $GO_FILES
+- go build
 notifications:
-    email: false
-
+  email: false
 before_deploy:
-  - PLATFORMS=(darwin/386 darwin/amd64 freebsd/386 freebsd/amd64 freebsd/arm linux/386 linux/amd64 linux/arm windows/386 windows/amd64)
-
- # build binary for all archs
-  - |
-    for PLATFORM in "${PLATFORMS[@]}"; do
-      echo "Building $PLATFORM"
-      GOOS=${PLATFORM%/*}
-      GOARCH=${PLATFORM#*/}
-      if [ "$GOOS" = "windows" ]; then
-        build_cmd="GOOS=$GOOS GOARCH=$GOARCH go build -o sample -ldflags '-w -s'"
-      else
-        build_cmd="CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH go build -o sample -ldflags '-d -w -s'"
-      fi
-      if ! eval $build_cmd; then
-        echo "Failed building sample for $PLATFORM" && return 1
-      fi
-      if [ "$GOOS" = "windows" ]; then
-        zip sample-${GOOS}-${GOARCH}.zip sample
-      else
-        tar cvzf sample-${GOOS}-${GOARCH}.tgz sample
-      fi
-    done
-  - ls
-
+- PLATFORMS=(darwin/386 darwin/amd64 freebsd/386 freebsd/amd64 freebsd/arm linux/386
+  linux/amd64 linux/arm windows/386 windows/amd64)
+- |
+  for PLATFORM in "${PLATFORMS[@]}"; do
+    echo "Building $PLATFORM"
+    GOOS=${PLATFORM%/*}
+    GOARCH=${PLATFORM#*/}
+    if [ "$GOOS" = "windows" ]; then
+      build_cmd="GOOS=$GOOS GOARCH=$GOARCH go build -o sample -ldflags '-w -s'"
+    else
+      build_cmd="CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH go build -o sample -ldflags '-d -w -s'"
+    fi
+    if ! eval $build_cmd; then
+      echo "Failed building sample for $PLATFORM" && return 1
+    fi
+    if [ "$GOOS" = "windows" ]; then
+      zip sample-${GOOS}-${GOARCH}.zip sample
+    else
+      tar cvzf sample-${GOOS}-${GOARCH}.tgz sample
+    fi
+  done
+- ls
 deploy:
   provider: releases
-  api_key: $AUTH_TOKEN
+  api_key: "$AUTH_TOKEN"
   file:
-    - "sample-darwin-386.tgz"
-    - "sample-darwin-amd64.tgz"
-
-    - "sample-freebsd-386.tgz"
-    - "sample-freebsd-arm.tgz"
-    - "sample-freebsd-amd64.tgz"
-
-    - "sample-linux-386.tgz"
-    - "sample-linux-arm.tgz"
-    - "sample-linux-amd64.tgz"
-
-    - "sample-windows-386.zip"
-    - "sample-windows-amd64.zip"
-
+  - sample-darwin-386.tgz
+  - sample-darwin-amd64.tgz
+  - sample-freebsd-386.tgz
+  - sample-freebsd-arm.tgz
+  - sample-freebsd-amd64.tgz
+  - sample-linux-386.tgz
+  - sample-linux-arm.tgz
+  - sample-linux-amd64.tgz
+  - sample-windows-386.zip
+  - sample-windows-amd64.zip
   skip_cleanup: true
   on:
     tags: true
+env:
+  global:
+    secure: fG3w/+KCBM08LWXem2jfnPvhFFbBGkJj6Hvihv+i5YQrz1naDmtUI80Nikk82Q5xHGIfdkhVXDhcw9UIGq0Pscg/9+Mp7XDNjwPj/DKvEVhjweRIbr8rMGoLc0h2csJG7P2ZVcoZn1rj7RXMUlYlNCvavyXM7AnaxNXEPOjUzcIuEPpIPfcKIA0HJ69SqKki/Z1IOpbq7FSIE5LHP8P2BYFVLbx4VqCzrEWw8Ox124ZSBkcPtIWPOTMrWYJuOSi0AfOOspRf7UdvBOo8KHNDdQ8mldUmvO/wBoDCMR+shROPAFm4c1nFlfP3IIBPH+Dsqck5FIlgxMQAIDm3OP9S0R7yYRHZjXqSnH3Zjnb4knMb/oHhHqFX3qS5iIPJ6R+1bFBVUrNz/G0rblzmUffDjXzErtszz4XGrAYvv6fB/YATsBP5L5BsubldWgE/pDosf6OIi9RzMd5iDILjkW73/Jjnn+l3gxp9shebtD6lb+6y4YliWJzg5y9CXVeDzOiLG7qg/G4f0Am/43Qrg72zLUPGsYxI/bZjCnfb7V2HOeyZ2wZmauMWk8qAiZOeLN7wV/I4V+4x5HTSadguGZoNECTRh5YIgtDmfWwlJqbDmaymrjUvQGLd+sqh16Kfg0djtDlQQ8rKrn9GUTGct8a6DUr1nYK/AQSJcY3p3NbOMDA=
