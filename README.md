@@ -27,6 +27,7 @@ A limbo server is a fallback server able to handle a massive amount of simultane
 | 1.13              | 393              | true      |                                                     |
 | 1.13.1            | 401              | true      |                                                     |
 | 1.13.2            | 404              | true      |                                                     |
+| 1.14              | 477              | true      |                                                     |
 
 #### Snapshot support
 TyphoonLimbo is able to load [TyphoonDep protocol-map modules](https://github.com/TyphoonMC/TyphoonDep/tree/master/protocol-map) to add a partial snapshots support.
