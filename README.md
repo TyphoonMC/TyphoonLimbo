@@ -7,6 +7,8 @@
 ### What is a limbo server ?
 A limbo server is a fallback server able to handle a massive amount of simultaneous connections. The player spawns into the void then waits here. It can be used to keep players connected to a network after a lobby crashed or as an afk server.
 
+![screenshot](screenshot.png)
+
 ### Minecraft protocol support
 
 See [TyphoonCore's protocol support](https://github.com/TyphoonMC/TyphoonCore#minecraft-protocol-support)
