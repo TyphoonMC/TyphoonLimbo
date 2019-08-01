@@ -9,25 +9,7 @@ A limbo server is a fallback server able to handle a massive amount of simultane
 
 ### Minecraft protocol support
 
-| Minecraft Version | Protocol Version | Supported | Comment                                             |
-|-------------------|------------------|-----------|-----------------------------------------------------|
-| 1.7.2 to 1.7.5    | 4                | true      | No boss bar, player list header/footer, compression |
-| 1.7.6 to 1.7.10   | 5                | true      | No boss bar, player list header/footer              |
-| 1.8 to 1.8.9      | 47               | true      | No boss bar                                         |
-| 1.9               | 107              | true      |                                                     |
-| 1.9.1             | 108              | true      |                                                     |
-| 1.9.2             | 109              | true      |                                                     |
-| 1.9.3 to 1.9.4    | 110              | true      |                                                     |
-| 1.10 to 1.10.2    | 210              | true      |                                                     |
-| 1.11              | 315              | true      |                                                     |
-| 1.11.1 to 1.11.2  | 316              | true      |                                                     |
-| 1.12              | 335              | true      |                                                     |
-| 1.12.1            | 338              | true      |                                                     |
-| 1.12.2            | 340              | true      |                                                     |
-| 1.13              | 393              | true      |                                                     |
-| 1.13.1            | 401              | true      |                                                     |
-| 1.13.2            | 404              | true      |                                                     |
-| 1.14              | 477              | true      |                                                     |
+See [TyphoonCore's protocol support](https://github.com/TyphoonMC/TyphoonCore#minecraft-protocol-support)
 
 #### Snapshot support
 TyphoonLimbo is able to load [TyphoonDep protocol-map modules](https://github.com/TyphoonMC/TyphoonDep/tree/master/protocol-map) to add a partial snapshots support.
