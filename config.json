@@ -13,5 +13,13 @@
     "handshake_address": 300,
     "player_name": 16,
     "chat_message": 32767
+  },
+  "spawn": {
+    "schematic": "spawn.schematic",
+    "location": {
+      "x": 21.5,
+      "y": 16.5,
+      "z": 22.5
+    }
   }
 }

@@ -6,17 +6,24 @@ import (
 	"github.com/TyphoonMC/go.uuid"
 )
 
+type SpawnConfig struct {
+	Schematic *string `json:"schematic"`
+	Location *t.Location `json:"location"`
+}
+
 type Config struct {
 	JoinMessage      json.RawMessage `json:"join_message"`
 	BossBar          json.RawMessage `json:"boss_bar"`
 	PlayerListHeader json.RawMessage `json:"playerlist_header"`
 	PlayerListFooter json.RawMessage `json:"playerlist_footer"`
+	Spawn *SpawnConfig `json:"spawn"`
 }
 
 var (
 	config        Config
 	bossbarCreate t.PacketBossBar
 	playerListHF  t.PacketPlayerListHeaderFooter
+	spawn *t.Map
 )
 
 func loadConfig(core *t.Core) {
@@ -42,5 +49,12 @@ func loadConfig(core *t.Core) {
 	if config.PlayerListFooter != nil {
 		msg := string(config.PlayerListFooter)
 		playerListHF.Footer = &msg
+	}
+	if config.Spawn != nil && config.Spawn.Schematic != nil {
+		m, err := t.LoadSchematic(*config.Spawn.Schematic)
+		if err != nil {
+			panic(err)
+		}
+		spawn = m
 	}
 }
