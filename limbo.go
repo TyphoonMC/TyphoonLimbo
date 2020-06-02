@@ -8,13 +8,12 @@ import (
 func main() {
 	core := t.Init()
 	core.SetBrand("typhoonlimbo")
-	core.SetGamemode(t.CREATIVE)
+	core.SetGamemode(t.SURVIVAL)
 
 	loadConfig(core)
 
 	if spawn != nil {
 		fmt.Println("Using schematic world")
-		spawn.Dimension = t.OVERWORLD
 		if config.Spawn.Location != nil {
 			spawn.Spawn = *config.Spawn.Location
 		}
@@ -48,8 +47,8 @@ func main() {
 }
 
 type ChunkSave struct {
-	X int `json:"x"`
-	Y int `json:"y"`
-	Bitmask int `json:"bitmask"`
-	Data string `json:"data"`
+	X       int    `json:"x"`
+	Y       int    `json:"y"`
+	Bitmask int    `json:"bitmask"`
+	Data    string `json:"data"`
 }

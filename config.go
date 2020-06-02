@@ -7,8 +7,8 @@ import (
 )
 
 type SpawnConfig struct {
-	Schematic *string `json:"schematic"`
-	Location *t.Location `json:"location"`
+	Schematic *string     `json:"schematic"`
+	Location  *t.Location `json:"location"`
 }
 
 type Config struct {
@@ -16,14 +16,14 @@ type Config struct {
 	BossBar          json.RawMessage `json:"boss_bar"`
 	PlayerListHeader json.RawMessage `json:"playerlist_header"`
 	PlayerListFooter json.RawMessage `json:"playerlist_footer"`
-	Spawn *SpawnConfig `json:"spawn"`
+	Spawn            *SpawnConfig    `json:"spawn"`
 }
 
 var (
 	config        Config
 	bossbarCreate t.PacketBossBar
 	playerListHF  t.PacketPlayerListHeaderFooter
-	spawn *t.Map
+	spawn         *t.Map
 )
 
 func loadConfig(core *t.Core) {
