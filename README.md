@@ -1,3 +1,5 @@
+# TyphoonLimbo is no longer in active development. Try out [LOOHP's Limbo](https://github.com/LOOHP/Limbo "LOOHP/Limbo") (1.19)
+---
 # TyphoonLimbo
 ## Lightweight minecraft limbo server
 
